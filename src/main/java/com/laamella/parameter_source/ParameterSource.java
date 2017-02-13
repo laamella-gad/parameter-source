@@ -1,40 +1,43 @@
 package com.laamella.parameter_source;
 
+import java.util.Optional;
+import java.util.function.Supplier;
+
 /**
- * Abstract interface to a parameter (simple key-value) store, adds checking of required parameters, a tight interface, logging, and easy testing.
+ * Abstract interface to a parameter (simple key-value) store, adds checking of required parameters, a tight interface,
+ * logging, and easy testing.
  */
-public abstract class ParameterSource {
-    /**
-     * Get a parameter that is required.
-     * @param key The name of the parameter
-     * @return the value of the parameter. Never null.
-     * @throws MissingParameterException if the value is null or missing.
-     */
-    public <T> T getParameter(String key) throws MissingParameterException {
-        T value = getRawParameter(key);
-        if (value == null) {
-            throw new MissingParameterException(key);
+public abstract class ParameterSource<T> {
+    public String getString(String key) {
+        return getOptionalString(key).orElseThrow(missingKeyException(key));
+    }
+
+    public Optional<String> getOptionalString(String key) {
+        return getOptionalValueFromSource(key).map(Object::toString);
+    }
+
+    private int getInteger(String key) {
+        return getOptionalInteger(key).orElseThrow(missingKeyException(key));
+    }
+
+    private Optional<Integer> getOptionalInteger(String key) {
+        final Optional<String> str = getOptionalString(key);
+        try {
+            return str.map(Integer::parseInt);
+        } catch (NumberFormatException e) {
+            throw new ParameterSourceException("Value %s of %s is not an integer.", str.get(), key);
         }
-        return value;
     }
 
     /**
-     * Get an optional parameter
+     * Get an optional value from the source. This is what all other methods are based on.
+     *
      * @param key the name of the parameter
-     * @param defaultValue the value that is used when the parameter is missing
-     * @return the value of the parameter, or defaultValue when it's missing.
+     * @return the value of the parameter wrapped in Optional, or Optional.empty() when it was not found.
      */
-    public <T> T getParameter(String key, T defaultValue) {
-        T value = getRawParameter(key);
-        if (value == null) {
-            return defaultValue;
-        }
-        return value;
+    protected abstract Optional<T> getOptionalValueFromSource(String key);
+
+    protected Supplier<ParameterSourceException> missingKeyException(String key) {
+        return () -> new ParameterSourceException("Key %s is missing.", key);
     }
-
-    /**
-     * Get a parameter value from the actual storage. When generalizing this class to support multiple storages (database, property file...) this method would be abstract in a base class.
-     */
-    protected abstract <T> T getRawParameter(String key);
-
 }

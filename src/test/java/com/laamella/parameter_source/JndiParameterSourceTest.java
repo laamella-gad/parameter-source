@@ -5,7 +5,9 @@ import org.junit.Test;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
 
-import static org.assertj.core.api.Assertions.assertThat;
+import java.util.Optional;
+
+import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -14,37 +16,23 @@ public class JndiParameterSourceTest {
     private final JndiParameterSource jndiParameterSource = new JndiParameterSource(initialContextMock);
 
     @Test
-    public void whenRequiredParameterExistsThenReturnIt() throws MissingParameterException, NamingException {
+    public void whenRequiredParameterExistsThenReturnIt() throws NamingException {
         when(initialContextMock.lookup("abc")).thenReturn("def");
-        String value = jndiParameterSource.getParameter("abc");
-        assertThat(value).isEqualTo("def");
+        Optional<Object> value = jndiParameterSource.getOptionalValueFromSource("abc");
+        assertEquals("def", value.get());
     }
 
-    @Test(expected = MissingParameterException.class)
-    public void whenRequiredParameterIsNullThenException() throws MissingParameterException, NamingException {
+    @Test
+    public void whenRequiredParameterIsNullThenException() throws NamingException {
         when(initialContextMock.lookup("abc")).thenReturn(null);
-        jndiParameterSource.getParameter("abc");
+        Optional<Object> abc = jndiParameterSource.getOptionalValueFromSource("abc");
+        assertEquals(false, abc.isPresent());
     }
 
-    @Test(expected = MissingParameterException.class)
-    public void whenRequiredParameterIsNotFoundThenException() throws MissingParameterException, NamingException {
+    @Test
+    public void whenRequiredParameterIsNotFoundThenException() throws NamingException {
         when(initialContextMock.lookup("abc")).thenThrow(new NamingException());
-        jndiParameterSource.getParameter("abc");
+        Optional<Object> abc = jndiParameterSource.getOptionalValueFromSource("abc");
+        assertEquals(false, abc.isPresent());
     }
-
-    @Test
-    public void whenOptionalParameterExistsThenReturnIt() throws MissingParameterException, NamingException {
-        when(initialContextMock.lookup("abc")).thenReturn("def");
-        String value = jndiParameterSource.getParameter("abc", "xyz");
-        assertThat(value).isEqualTo("def");
-    }
-
-    @Test
-    public void whenOptionalParameterIsNullThenReturnDefault() throws MissingParameterException, NamingException {
-        when(initialContextMock.lookup("abc")).thenReturn(null);
-        String value = jndiParameterSource.getParameter("abc", "xyz");
-        assertThat(value).isEqualTo("xyz");
-    }
-
-
 }

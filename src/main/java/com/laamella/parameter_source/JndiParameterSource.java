@@ -5,11 +5,12 @@ import org.slf4j.LoggerFactory;
 
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
+import java.util.Optional;
 
 /**
  * Uses a JNDI InitialContext as the parameter store.
  */
-public class JndiParameterSource extends ParameterSource {
+public class JndiParameterSource extends ParameterSource<Object> {
     private final Logger logger = LoggerFactory.getLogger(JndiParameterSource.class);
 
     private final InitialContext initialContext;
@@ -23,12 +24,12 @@ public class JndiParameterSource extends ParameterSource {
     }
 
     @Override
-    protected <T> T getRawParameter(String key) {
+    protected Optional<Object> getOptionalValueFromSource(String key) {
         try {
-            return (T) initialContext.lookup(key);
+            return Optional.ofNullable(initialContext.lookup(key));
         } catch (NamingException e) {
-            logger.debug("Parameter not found", e);
-            return null;
+            logger.debug(String.format("Parameter %s not found", key), e);
+            return Optional.empty();
         }
     }
 }
