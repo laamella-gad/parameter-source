@@ -5,7 +5,7 @@ import java.io.InputStream;
 import java.util.Optional;
 import java.util.Properties;
 
-public class PropertiesParameterSource extends ParameterSource {
+public class PropertiesParameterSource extends StringParameterSource {
     private final Properties properties;
 
     public PropertiesParameterSource(Properties properties) {
@@ -40,15 +40,5 @@ public class PropertiesParameterSource extends ParameterSource {
     @Override
     public Optional<String> getOptionalString(String key) {
         return Optional.ofNullable(properties.getProperty(key));
-    }
-
-    @Override
-    public Optional<Integer> getOptionalInteger(String key) {
-        final Optional<String> str = getOptionalString(key);
-        try {
-            return str.map(Integer::parseInt);
-        } catch (NumberFormatException e) {
-            throw new ParameterSourceException("Value %s of %s is not an integer.", str.get(), key);
-        }
     }
 }
