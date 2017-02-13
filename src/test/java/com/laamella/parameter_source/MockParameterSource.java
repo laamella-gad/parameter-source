@@ -2,10 +2,14 @@ package com.laamella.parameter_source;
 
 import java.util.Optional;
 
-public class MockParameterSource extends ParameterSource<String> {
-    public Optional<String> value;
+public class MockParameterSource extends ParameterSource {
+    @Override
+    public Optional<String> getOptionalString(String key) {
+        return null;
+    }
 
-    protected Optional<String> getOptionalValueFromSource(String key) {
-        return value;
+    @Override
+    public Optional<Integer> getOptionalInteger(String key) {
+        return null;
     }
 }

@@ -18,21 +18,21 @@ public class JndiParameterSourceTest {
     @Test
     public void whenRequiredParameterExistsThenReturnIt() throws NamingException {
         when(initialContextMock.lookup("abc")).thenReturn("def");
-        Optional<Object> value = jndiParameterSource.getOptionalValueFromSource("abc");
+        Optional<String> value = jndiParameterSource.getOptionalString("abc");
         assertEquals("def", value.get());
     }
 
     @Test
     public void whenRequiredParameterIsNullThenException() throws NamingException {
         when(initialContextMock.lookup("abc")).thenReturn(null);
-        Optional<Object> abc = jndiParameterSource.getOptionalValueFromSource("abc");
+        Optional<String> abc = jndiParameterSource.getOptionalString("abc");
         assertEquals(false, abc.isPresent());
     }
 
     @Test
     public void whenRequiredParameterIsNotFoundThenException() throws NamingException {
         when(initialContextMock.lookup("abc")).thenThrow(new NamingException());
-        Optional<Object> abc = jndiParameterSource.getOptionalValueFromSource("abc");
+        Optional<String> abc = jndiParameterSource.getOptionalString("abc");
         assertEquals(false, abc.isPresent());
     }
 }

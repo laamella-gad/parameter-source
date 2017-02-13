@@ -10,7 +10,7 @@ import java.util.Optional;
 /**
  * Uses a JNDI InitialContext as the parameter store.
  */
-public class JndiParameterSource extends ParameterSource<Object> {
+public class JndiParameterSource extends ParameterSource {
     private final Logger logger = LoggerFactory.getLogger(JndiParameterSource.class);
 
     private final InitialContext initialContext;
@@ -24,9 +24,22 @@ public class JndiParameterSource extends ParameterSource<Object> {
     }
 
     @Override
-    protected Optional<Object> getOptionalValueFromSource(String key) {
+    public Optional<String> getOptionalString(String key) {
+        return getOptionalObject(key, String.class);
+    }
+
+    @Override
+    public Optional<Integer> getOptionalInteger(String key) {
+        return getOptionalObject(key, int.class);
+    }
+
+    public <T> T getObject(String key, Class<T> type) {
+        return getOptionalObject(key, type).orElseThrow(missingKeyException(key));
+    }
+
+    public <T> Optional<T> getOptionalObject(String key, Class<T> type) {
         try {
-            return Optional.ofNullable(initialContext.lookup(key));
+            return Optional.ofNullable(type.cast(initialContext.lookup(key)));
         } catch (NamingException e) {
             logger.debug(String.format("Parameter %s not found", key), e);
             return Optional.empty();

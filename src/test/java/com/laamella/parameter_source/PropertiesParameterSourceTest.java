@@ -12,14 +12,14 @@ public class PropertiesParameterSourceTest {
 
     @Test
     public void whenWeGetAKeyThenWeGetAValue() throws IOException {
-        Optional<String> abc = propertiesParameterSource.getOptionalValueFromSource("abc");
+        Optional<String> abc = propertiesParameterSource.getOptionalString("abc");
 
         assertEquals("def", abc.get());
     }
 
     @Test
     public void whenWeGetAKeyThatDoesNotExistThenWeDontGetAValue() throws IOException {
-        Optional<String> abc = propertiesParameterSource.getOptionalValueFromSource("qoqoq");
+        Optional<String> abc = propertiesParameterSource.getOptionalString("qoqoq");
 
         assertEquals(false, abc.isPresent());
     }
