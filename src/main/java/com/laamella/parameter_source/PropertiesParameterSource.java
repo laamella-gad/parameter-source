@@ -21,7 +21,7 @@ public class PropertiesParameterSource extends StringParameterSource {
         try {
             properties.load(propertiesInputStream);
         } catch (IOException e) {
-            throw new ParameterSourceException("Can't load properties file '%s'", resourceName);
+            throw new ParameterSourceException(e, "Can't load properties file '%s'", resourceName);
         }
         this.properties = properties;
     }
