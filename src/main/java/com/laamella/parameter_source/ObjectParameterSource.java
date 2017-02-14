@@ -3,6 +3,7 @@ package com.laamella.parameter_source;
 import java.util.Optional;
 
 import static com.laamella.parameter_source.ParameterSourceException.missingKeyException;
+import static java.util.Objects.requireNonNull;
 
 public interface ObjectParameterSource extends ParameterSource {
     default Optional<String> getOptionalString(String key) {
@@ -14,6 +15,8 @@ public interface ObjectParameterSource extends ParameterSource {
     }
 
     default <T> T getObject(String key, Class<T> type) {
+        requireNonNull(key);
+        requireNonNull(type);
         return getOptionalObject(key, type).orElseThrow(missingKeyException(key));
     }
 
