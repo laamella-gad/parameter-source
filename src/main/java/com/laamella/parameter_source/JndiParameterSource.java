@@ -5,10 +5,9 @@ import org.slf4j.LoggerFactory;
 
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
-import java.util.Objects;
 import java.util.Optional;
 
-import static java.util.Objects.*;
+import static java.util.Objects.requireNonNull;
 
 /**
  * Uses a JNDI InitialContext as the parameter store.
@@ -33,10 +32,13 @@ public class JndiParameterSource implements ObjectParameterSource {
         requireNonNull(type);
 
         try {
-            return Optional.ofNullable(type.cast(initialContext.lookup(key)));
+            final Object value = initialContext.lookup(key);
+            if (type.isInstance(value)) {
+                return Optional.of(type.cast(value));
+            }
         } catch (NamingException e) {
             logger.debug(String.format("Parameter %s not found", key), e);
-            return Optional.empty();
         }
+        return Optional.empty();
     }
 }
