@@ -6,7 +6,7 @@
 
    <groupId>com.laamella</groupId>
    <artifactId>parameter-source</artifactId>
-   <version>1.0-SNAPSHOT</version>
+   <version>0.1-SNAPSHOT</version>
 
    <properties>
       <slf4j.version>1.7.22</slf4j.version>
@@ -51,4 +51,12 @@
          <scope>test</scope>
       </dependency>
    </dependencies>
+
+   <distributionManagement>
+      <repository>
+         <id>bintray-laamella-gad-com.laamella</id>
+         <name>laamella-gad-com.laamella</name>
+         <url>https://api.bintray.com/maven/laamella-gad/com.laamella/parameter-source/</url>
+      </repository>
+   </distributionManagement>
 </project>
