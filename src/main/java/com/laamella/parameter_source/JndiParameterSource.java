@@ -10,7 +10,7 @@ import java.util.Optional;
 /**
  * Uses a JNDI InitialContext as the parameter store.
  */
-public class JndiParameterSource extends ObjectParameterSource {
+public class JndiParameterSource implements ObjectParameterSource {
     private final Logger logger = LoggerFactory.getLogger(JndiParameterSource.class);
 
     private final InitialContext initialContext;

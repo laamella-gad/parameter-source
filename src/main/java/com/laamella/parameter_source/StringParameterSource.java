@@ -2,12 +2,9 @@ package com.laamella.parameter_source;
 
 import java.util.Optional;
 
-public abstract class StringParameterSource extends ParameterSource {
+public interface StringParameterSource extends ParameterSource {
     @Override
-    public abstract Optional<String> getOptionalString(String key);
-
-    @Override
-    public Optional<Integer> getOptionalInteger(String key) {
+    default Optional<Integer> getOptionalInteger(String key) {
         final Optional<String> str = getOptionalString(key);
         try {
             return str.map(Integer::parseInt);

@@ -5,7 +5,7 @@ import java.io.InputStream;
 import java.util.Optional;
 import java.util.Properties;
 
-public class PropertiesParameterSource extends StringParameterSource {
+public class PropertiesParameterSource implements StringParameterSource {
     private final Properties properties;
 
     public PropertiesParameterSource(Properties properties) {
