@@ -5,6 +5,9 @@ import java.util.function.BiFunction;
 
 import static java.util.Objects.requireNonNull;
 
+/**
+ * Supports the "subSource" method.
+ */
 public class SubParameterSource implements ParameterSource {
     private final ParameterSource delegate;
     private final String keyPart;

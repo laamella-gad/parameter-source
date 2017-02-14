@@ -7,14 +7,24 @@ import java.util.Properties;
 
 import static java.util.Objects.requireNonNull;
 
+/**
+ * Wraps a Java Properties object to give it the ParameterSource interface.
+ * Can handle loading properties if required.
+ */
 public class PropertiesParameterSource implements StringParameterSource {
     private final Properties properties;
 
+    /**
+     * Use an existing Properties object.
+     */
     public PropertiesParameterSource(Properties properties) {
         requireNonNull(properties);
         this.properties = properties;
     }
 
+    /**
+     * Load properties from a properties resource file called "resourceName" relative to "resourceRelativeClass"
+     */
     public PropertiesParameterSource(Class<?> resourceRelativeClass, String resourceName) {
         requireNonNull(resourceRelativeClass);
         requireNonNull(resourceName);
@@ -32,6 +42,9 @@ public class PropertiesParameterSource implements StringParameterSource {
         this.properties = properties;
     }
 
+    /**
+     * Loads properties from a file called "resourceName" found on the classpath.
+     */
     public PropertiesParameterSource(String resourceName) {
         this(PropertiesParameterSource.class, prefixSlash(resourceName));
     }
@@ -50,6 +63,11 @@ public class PropertiesParameterSource implements StringParameterSource {
         return Optional.ofNullable(properties.getProperty(key));
     }
 
+    /**
+     * Creates a parameter source that prepends "keyPart" to every key requested.
+     * This can be chained to go deeper and deeper.
+     * Note that a "." between "keyPart" and requested keys is enforced.
+     */
     public SubParameterSource subSource(String keyPart) {
         requireNonNull(keyPart);
         return new SubParameterSource(this, keyPart, (a, b) -> {

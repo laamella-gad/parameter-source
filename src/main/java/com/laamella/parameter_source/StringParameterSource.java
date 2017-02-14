@@ -4,6 +4,9 @@ import java.util.Optional;
 
 import static java.util.Objects.requireNonNull;
 
+/**
+ * A parameter source that stores strings.
+ */
 public interface StringParameterSource extends ParameterSource {
     @Override
     default Optional<Integer> getOptionalInteger(String key) {

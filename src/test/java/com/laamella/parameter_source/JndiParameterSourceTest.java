@@ -35,4 +35,11 @@ public class JndiParameterSourceTest {
         Optional<String> abc = jndiParameterSource.getOptionalString("abc");
         assertEquals(false, abc.isPresent());
     }
+
+    @Test
+    public void whenObjectIsOfWrongTypeThenItIsNotFound() throws NamingException {
+        when(initialContextMock.lookup("abc")).thenReturn("def");
+        Optional<Integer> abc = jndiParameterSource.getOptionalInteger("abc");
+        assertEquals(false, abc.isPresent());
+    }
 }
