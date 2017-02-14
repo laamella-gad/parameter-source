@@ -59,4 +59,20 @@
          <url>https://api.bintray.com/maven/laamella-gad/com.laamella/parameter-source/</url>
       </repository>
    </distributionManagement>
+
+   <scm>
+      <connection>scm:git:git@github.com:laamella-gad/parameter-source.git</connection>
+      <developerConnection>scm:git:git@github.com:laamella-gad/parameter-source.git</developerConnection>
+      <url>https://github.com/laamella-gad/parameter-source.git</url>
+      <tag>HEAD</tag>
+   </scm>
+
+   <licenses>
+      <license>
+         <name>The Apache Software License, Version 2.0</name>
+         <url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
+         <distribution>repo</distribution>
+      </license>
+   </licenses>
+
 </project>
