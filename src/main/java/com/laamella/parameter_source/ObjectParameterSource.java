@@ -7,6 +7,8 @@ import static java.util.Objects.requireNonNull;
 
 /**
  * A parameter source that stores objects.
+ * If a retrieve value is not of the requested type,
+ * conversion will be attempted.
  */
 public interface ObjectParameterSource extends ParameterSource {
     default Optional<String> getOptionalString(String key) {

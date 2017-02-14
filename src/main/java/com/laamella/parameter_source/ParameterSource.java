@@ -26,7 +26,7 @@ public interface ParameterSource {
      * If values are missing, it looks in the fallback instead.
      * @see FallbackParameterSource
      */
-    default ParameterSource withFallback(ParameterSource fallback) {
+    default FallbackParameterSource withFallback(ParameterSource fallback) {
         requireNonNull(fallback);
         return new FallbackParameterSource(this, fallback);
     }
