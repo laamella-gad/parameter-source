@@ -2,20 +2,23 @@ package com.laamella.parameter_source;
 
 import java.util.Optional;
 
-public abstract class ObjectParameterSource extends ParameterSource {
-    @Override
-    public Optional<String> getOptionalString(String key) {
+import static com.laamella.parameter_source.ParameterSourceException.missingKeyException;
+import static java.util.Objects.requireNonNull;
+
+public interface ObjectParameterSource extends ParameterSource {
+    default Optional<String> getOptionalString(String key) {
         return getOptionalObject(key, String.class);
     }
 
-    @Override
-    public Optional<Integer> getOptionalInteger(String key) {
+    default Optional<Integer> getOptionalInteger(String key) {
         return getOptionalObject(key, int.class);
     }
 
-    public <T> T getObject(String key, Class<T> type) {
+    default <T> T getObject(String key, Class<T> type) {
+        requireNonNull(key);
+        requireNonNull(type);
         return getOptionalObject(key, type).orElseThrow(missingKeyException(key));
     }
 
-    public abstract <T> Optional<T> getOptionalObject(String key, Class<T> type);
+    <T> Optional<T> getOptionalObject(String key, Class<T> type);
 }
