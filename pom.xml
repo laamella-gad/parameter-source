@@ -64,8 +64,8 @@
 	</distributionManagement>
 
 	<scm>
-		<connection>scm:git:https://git@github.com:laamella-gad/parameter-source.git</connection>
-		<developerConnection>scm:git:https://git@github.com:laamella-gad/parameter-source.git</developerConnection>
+		<connection>scm:git:https://git@github.com/laamella-gad/parameter-source.git</connection>
+		<developerConnection>scm:git:https://git@github.com/laamella-gad/parameter-source.git</developerConnection>
 		<url>https://github.com/laamella-gad/parameter-source.git</url>
 	  <tag>parameter-source-0.1</tag>
   </scm>
