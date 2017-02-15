@@ -18,6 +18,7 @@ Offered solutions are:
 - an API that has methods that will either fail when a required parameter is missing, or will deliver a Java 8 Optional when the parameter is not required
 - file handling and type conversion work as tight as possible.
 If a parameter is correct, it will be delivered, otherwise it will throw an exception so that an application does not start in an undefined state.
+- tight support for the kind of values that are often seen as application parameters: strings, durations, urls...
 - one approach to API naming and much reuse, so that parameter sources will look alike as much as possible.
 Extending a class to define your own source is easy.
 
@@ -85,12 +86,16 @@ Optional<String> value = source.getOptionalString("abc");
 String value = source.getOptionalString("abc").orElse("myDefaultVal");
 ```
 
-## Getting a required value
+## Getting a required string value
 Getters that do NOT mention "Optional" in their name are required.
 These will throw a `ParameterSourceException` when the key is not found.
 ```java
 String value = source.getString("abc");
 ```
+
+## Getting other values
+
+The pattern described above for string is the same for other types.
 
 ## Type conversions
 
