@@ -26,6 +26,15 @@ public class ObjectParameterSourceTest {
     }
 
     @Test
+    public void whenRequestingALongAndValueIsALongThenItIsReturned() {
+        StubObjectParameterSource source = new StubObjectParameterSource(15L);
+
+        long value = source.getLong("");
+
+        assertEquals(15L, value);
+    }
+
+    @Test
     public void whenRequestingAnObjectThenItIsReturned() {
         HashMap<Object, Object> stubValue = new HashMap<>();
         StubObjectParameterSource source = new StubObjectParameterSource(stubValue);
