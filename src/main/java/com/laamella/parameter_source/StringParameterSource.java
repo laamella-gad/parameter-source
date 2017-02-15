@@ -1,23 +1,31 @@
 package com.laamella.parameter_source;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
+import java.util.function.Function;
 
 import static java.util.Objects.requireNonNull;
 
 /**
  * A parameter source that stores strings.
  * Getting types that are not strings will attempt parsing the string value into that type.
+ * Getting lists will split the value on commas,
+ * then attempt to convert each string between the commas to the requested type.
  */
 public abstract class StringParameterSource implements ParameterSource {
     @Override
     public Optional<Integer> getOptionalInteger(String key) {
         requireNonNull(key);
 
-        final Optional<String> str = getOptionalString(key);
+        return getOptionalString(key).map(s -> stringToInteger(key, s));
+    }
+
+    protected int stringToInteger(String key, String str) {
         try {
-            return str.map(Integer::parseInt);
+            return Integer.parseInt(str);
         } catch (NumberFormatException e) {
-            throw new ParameterSourceException("Value %s of %s is not an integer.", str.get(), key);
+            throw new ParameterSourceException("Value %s of %s is not an integer.", str, key);
         }
     }
 
@@ -25,11 +33,29 @@ public abstract class StringParameterSource implements ParameterSource {
     public Optional<Long> getOptionalLong(String key) {
         requireNonNull(key);
 
-        final Optional<String> str = getOptionalString(key);
+        return getOptionalString(key).map(s -> stringToLong(key, s));
+    }
+
+    @Override
+    public Optional<List<String>> getOptionalStringList(String key) {
+        requireNonNull(key);
+
+        return getOptionalString(key).map(s -> stringToList(s, i -> i));
+    }
+
+    protected <T> List<T> stringToList(String input, Function<String, T> itemConverter) {
+        final List<T> result = new ArrayList<>();
+        for (String itemString : input.split(",")) {
+            result.add(itemConverter.apply(itemString.trim()));
+        }
+        return result;
+    }
+
+    protected long stringToLong(String key, String str) {
         try {
-            return str.map(Long::parseLong);
+            return Long.parseLong(str);
         } catch (NumberFormatException e) {
-            throw new ParameterSourceException("Value %s of %s is not a long.", str.get(), key);
+            throw new ParameterSourceException("Value %s of %s is not a long.", str, key);
         }
     }
 
@@ -37,11 +63,14 @@ public abstract class StringParameterSource implements ParameterSource {
     public Optional<Float> getOptionalFloat(String key) {
         requireNonNull(key);
 
-        final Optional<String> str = getOptionalString(key);
+        return getOptionalString(key).map(s -> stringToFloat(key, s));
+    }
+
+    protected float stringToFloat(String key, String str) {
         try {
-            return str.map(Float::parseFloat);
+            return Float.parseFloat(str);
         } catch (NumberFormatException e) {
-            throw new ParameterSourceException("Value %s of %s is not a float.", str.get(), key);
+            throw new ParameterSourceException("Value %s of %s is not a float.", str, key);
         }
     }
 
@@ -49,11 +78,14 @@ public abstract class StringParameterSource implements ParameterSource {
     public Optional<Double> getOptionalDouble(String key) {
         requireNonNull(key);
 
-        final Optional<String> str = getOptionalString(key);
+        return getOptionalString(key).map(s -> stringToDouble(key, s));
+    }
+
+    protected double stringToDouble(String key, String str) {
         try {
-            return str.map(Double::parseDouble);
+            return Double.parseDouble(str);
         } catch (NumberFormatException e) {
-            throw new ParameterSourceException("Value %s of %s is not a double.", str.get(), key);
+            throw new ParameterSourceException("Value %s of %s is not a double.", str, key);
         }
     }
 
@@ -61,6 +93,11 @@ public abstract class StringParameterSource implements ParameterSource {
     public Optional<Object> getOptionalObject(String key) {
         requireNonNull(key);
 
-        return getOptionalString(key).map(s -> (Object) s);
+        return getOptionalString(key).map(s -> stringToObject(key, s));
     }
+
+    protected Object stringToObject(String key, String str) {
+        return str;
+    }
+
 }

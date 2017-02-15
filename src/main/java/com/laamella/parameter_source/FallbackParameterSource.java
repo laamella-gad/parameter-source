@@ -1,5 +1,6 @@
 package com.laamella.parameter_source;
 
+import java.util.List;
 import java.util.Optional;
 
 import static java.util.Objects.requireNonNull;
@@ -25,6 +26,15 @@ public class FallbackParameterSource implements ParameterSource {
             return value;
         }
         return fallbackSource.getOptionalString(key);
+    }
+
+    @Override
+    public Optional<List<String>> getOptionalStringList(String key) {
+        Optional<List<String>> value = primarySource.getOptionalStringList(key);
+        if (value.isPresent()) {
+            return value;
+        }
+        return fallbackSource.getOptionalStringList(key);
     }
 
     @Override

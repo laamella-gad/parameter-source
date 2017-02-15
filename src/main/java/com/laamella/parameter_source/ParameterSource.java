@@ -1,5 +1,6 @@
 package com.laamella.parameter_source;
 
+import java.util.List;
 import java.util.Optional;
 
 import static com.laamella.parameter_source.ParameterSourceException.missingKeyException;
@@ -14,6 +15,11 @@ public interface ParameterSource {
      * Retrieves a String from this source by key.
      */
     Optional<String> getOptionalString(String key);
+
+    /**
+     * Retrieves a list of Strings from this source by key.
+     */
+    Optional<List<String>> getOptionalStringList(String key);
 
     /**
      * Retrieves an optional Integer from this source by key.
@@ -59,6 +65,16 @@ public interface ParameterSource {
     default String getString(String key) {
         requireNonNull(key);
         return getOptionalString(key).orElseThrow(missingKeyException(key));
+    }
+
+    /**
+     * Retrieves a list of Strings from this source by key.
+     *
+     * @throws ParameterSourceException when the key is missing.
+     */
+    default List<String> getStringList(String key) {
+        requireNonNull(key);
+        return getOptionalStringList(key).orElseThrow(missingKeyException(key));
     }
 
     /**

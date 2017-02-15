@@ -1,6 +1,7 @@
 package com.laamella.parameter_source;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.function.Function;
@@ -32,6 +33,11 @@ public class CachingParameterSource implements ParameterSource {
     @Override
     public Optional<String> getOptionalString(String key) {
         return storage.get(key, cachedParameterSource::getOptionalString);
+    }
+
+    @Override
+    public Optional<List<String>> getOptionalStringList(String key) {
+        return storage.get(key, cachedParameterSource::getOptionalStringList);
     }
 
     @Override

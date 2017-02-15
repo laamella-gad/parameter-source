@@ -1,5 +1,6 @@
 package com.laamella.parameter_source;
 
+import java.util.List;
 import java.util.Optional;
 
 import static java.util.Objects.requireNonNull;
@@ -44,6 +45,12 @@ public class SubParameterSource implements ParameterSource {
     public Optional<Float> getOptionalFloat(String key) {
         requireNonNull(key);
         return delegate.getOptionalFloat(combineKeys(keyPart, key));
+    }
+
+    @Override
+    public Optional<List<String>> getOptionalStringList(String key) {
+        requireNonNull(key);
+        return delegate.getOptionalStringList(combineKeys(keyPart, key));
     }
 
     @Override

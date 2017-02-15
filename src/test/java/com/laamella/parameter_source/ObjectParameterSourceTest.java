@@ -2,7 +2,9 @@ package com.laamella.parameter_source;
 
 import org.junit.Test;
 
+import java.util.Arrays;
 import java.util.HashMap;
+import java.util.List;
 
 import static org.junit.Assert.assertEquals;
 
@@ -50,6 +52,16 @@ public class ObjectParameterSourceTest {
         float value = source.getFloat("");
 
         assertEquals(15f, value, 0);
+    }
+
+    @Test
+    public void whenRequestingAStringListAndValueIsAStringListThenItIsReturned() {
+        List<String> list = Arrays.asList("a", "b");
+        StubObjectParameterSource source = new StubObjectParameterSource(list);
+
+        List<String> value = source.getStringList("");
+
+        assertEquals(list, value);
     }
 
     @Test

@@ -2,6 +2,8 @@ package com.laamella.parameter_source;
 
 import org.junit.Test;
 
+import java.util.List;
+
 import static org.junit.Assert.assertEquals;
 
 public class StringParameterSourceTest {
@@ -31,6 +33,16 @@ public class StringParameterSourceTest {
         float value = new StubStringParameterSource("123.123").getFloat("");
 
         assertEquals(123.123f, value, 0);
+    }
+
+    @Test
+    public void whenRequestingAStringListThenAStringIsSplitOnCommas() {
+        List<String> list = new StubStringParameterSource("henk, piet, klaas").getStringList("");
+
+        assertEquals(3, list.size());
+        assertEquals("henk", list.get(0));
+        assertEquals("piet", list.get(1));
+        assertEquals("klaas", list.get(2));
     }
 
     @Test(expected = ParameterSourceException.class)

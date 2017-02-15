@@ -1,5 +1,6 @@
 package com.laamella.parameter_source;
 
+import java.util.List;
 import java.util.Optional;
 
 /**
@@ -22,6 +23,21 @@ public abstract class ObjectParameterSource implements ParameterSource {
                 return Optional.of((Integer) o);
             }
             throw new ParameterSourceException("%s does not contain an integer value.", key);
+        } else {
+            return Optional.empty();
+        }
+    }
+
+    @Override
+    public Optional<List<String>> getOptionalStringList(String key) {
+        Optional<Object> optionalObject = getOptionalObject(key);
+        if (optionalObject.isPresent()) {
+            Object o = optionalObject.get();
+            if (o instanceof List) {
+                // TODO we could check if there are really strings in the list
+                return Optional.of((List<String>) o);
+            }
+            throw new ParameterSourceException("%s does not contain a list value.", key);
         } else {
             return Optional.empty();
         }
