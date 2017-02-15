@@ -26,6 +26,16 @@ public interface ParameterSource {
     Optional<Long> getOptionalLong(String key);
 
     /**
+     * Retrieves an optional Float from this source by key.
+     */
+    Optional<Float> getOptionalFloat(String key);
+
+    /**
+     * Retrieves an optional Double from this source by key.
+     */
+    Optional<Double> getOptionalDouble(String key);
+
+    /**
      * Retrieves an optional Object from this source by key.
      */
     Optional<Object> getOptionalObject(String key);
@@ -72,6 +82,26 @@ public interface ParameterSource {
     }
 
     /**
+     * Retrieves a required float from this source by key.
+     *
+     * @throws ParameterSourceException when the key is missing.
+     */
+    default float getFloat(String key) {
+        requireNonNull(key);
+        return getOptionalFloat(key).orElseThrow(missingKeyException(key));
+    }
+
+    /**
+     * Retrieves a required double from this source by key.
+     *
+     * @throws ParameterSourceException when the key is missing.
+     */
+    default double getDouble(String key) {
+        requireNonNull(key);
+        return getOptionalDouble(key).orElseThrow(missingKeyException(key));
+    }
+
+    /**
      * Retrieves a required object from this source by key.
      */
     default Object getObject(String key) {
@@ -86,21 +116,7 @@ public interface ParameterSource {
      */
     default SubParameterSource subSource(String keyPart) {
         requireNonNull(keyPart);
-        return new SubParameterSource(this, keyPart, (a, b) -> {
-            while (!a.isEmpty() && a.endsWith(getPathSeparator())) {
-                a = a.substring(0, a.length() - 1);
-            }
-            while (!b.isEmpty() && b.startsWith(getPathSeparator())) {
-                b = b.substring(1);
-            }
-            if (a.isEmpty()) {
-                return b;
-            }
-            if (b.isEmpty()) {
-                return a;
-            }
-            return a + getPathSeparator() + b;
-        });
+        return new SubParameterSource(this, keyPart, getPathSeparator());
     }
 
     /**

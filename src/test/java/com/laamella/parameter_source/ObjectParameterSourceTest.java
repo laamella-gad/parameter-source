@@ -35,6 +35,24 @@ public class ObjectParameterSourceTest {
     }
 
     @Test
+    public void whenRequestingADoubleAndValueIsADoubleThenItIsReturned() {
+        StubObjectParameterSource source = new StubObjectParameterSource(15.0);
+
+        double value = source.getDouble("");
+
+        assertEquals(15.0, value, 0);
+    }
+
+    @Test
+    public void whenRequestingAFloatAndValueIsAFloatThenItIsReturned() {
+        StubObjectParameterSource source = new StubObjectParameterSource(15f);
+
+        float value = source.getFloat("");
+
+        assertEquals(15f, value, 0);
+    }
+
+    @Test
     public void whenRequestingAnObjectThenItIsReturned() {
         HashMap<Object, Object> stubValue = new HashMap<>();
         StubObjectParameterSource source = new StubObjectParameterSource(stubValue);

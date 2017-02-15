@@ -34,6 +34,30 @@ public interface StringParameterSource extends ParameterSource {
     }
 
     @Override
+    default Optional<Float> getOptionalFloat(String key) {
+        requireNonNull(key);
+
+        final Optional<String> str = getOptionalString(key);
+        try {
+            return str.map(Float::parseFloat);
+        } catch (NumberFormatException e) {
+            throw new ParameterSourceException("Value %s of %s is not a float.", str.get(), key);
+        }
+    }
+
+    @Override
+    default Optional<Double> getOptionalDouble(String key) {
+        requireNonNull(key);
+
+        final Optional<String> str = getOptionalString(key);
+        try {
+            return str.map(Double::parseDouble);
+        } catch (NumberFormatException e) {
+            throw new ParameterSourceException("Value %s of %s is not a double.", str.get(), key);
+        }
+    }
+
+    @Override
     default Optional<Object> getOptionalObject(String key) {
         requireNonNull(key);
 

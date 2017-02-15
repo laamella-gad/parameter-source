@@ -1,7 +1,6 @@
 package com.laamella.parameter_source;
 
 import java.util.Optional;
-import java.util.function.BiFunction;
 
 import static java.util.Objects.requireNonNull;
 
@@ -11,16 +10,16 @@ import static java.util.Objects.requireNonNull;
 public class SubParameterSource implements ParameterSource {
     private final ParameterSource delegate;
     private final String keyPart;
-    private final BiFunction<String, String, String> keyCombiner;
+    private final String pathSeparator;
 
-    public SubParameterSource(ParameterSource delegate, String keyPart, BiFunction<String, String, String> keyCombiner) {
+    SubParameterSource(ParameterSource delegate, String keyPart, String pathSeparator) {
         requireNonNull(delegate);
         requireNonNull(keyPart);
-        requireNonNull(keyCombiner);
+        requireNonNull(pathSeparator);
 
         this.delegate = delegate;
         this.keyPart = keyPart;
-        this.keyCombiner = keyCombiner;
+        this.pathSeparator = pathSeparator;
     }
 
     @Override
@@ -42,6 +41,18 @@ public class SubParameterSource implements ParameterSource {
     }
 
     @Override
+    public Optional<Float> getOptionalFloat(String key) {
+        requireNonNull(key);
+        return delegate.getOptionalFloat(combineKeys(keyPart, key));
+    }
+
+    @Override
+    public Optional<Double> getOptionalDouble(String key) {
+        requireNonNull(key);
+        return delegate.getOptionalDouble(combineKeys(keyPart, key));
+    }
+
+    @Override
     public Optional<Object> getOptionalObject(String key) {
         requireNonNull(key);
         return delegate.getOptionalObject(combineKeys(keyPart, key));
@@ -50,13 +61,30 @@ public class SubParameterSource implements ParameterSource {
     @Override
     public SubParameterSource subSource(String keyPart) {
         requireNonNull(keyPart);
-        return new SubParameterSource(this, keyPart, keyCombiner);
+        return new SubParameterSource(this, keyPart, getPathSeparator());
     }
 
-    public String combineKeys(String first, String second) {
-        requireNonNull(first);
-        requireNonNull(second);
+    @Override
+    public String getPathSeparator() {
+        return pathSeparator;
+    }
 
-        return keyCombiner.apply(first, second);
+    private String combineKeys(String a, String b) {
+        requireNonNull(a);
+        requireNonNull(b);
+
+        while (!a.isEmpty() && a.endsWith(getPathSeparator())) {
+            a = a.substring(0, a.length() - 1);
+        }
+        while (!b.isEmpty() && b.startsWith(getPathSeparator())) {
+            b = b.substring(1);
+        }
+        if (a.isEmpty()) {
+            return b;
+        }
+        if (b.isEmpty()) {
+            return a;
+        }
+        return a + getPathSeparator() + b;
     }
 }

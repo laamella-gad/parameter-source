@@ -10,28 +10,18 @@ import java.util.function.Function;
  * Keeps values in cache until flush() is called.
  */
 public class CachingParameterSource implements ParameterSource {
-    private final Cache<String, Optional<String>> stringValueCache;
-    private final Cache<String, Optional<Integer>> integerValueCache;
-    private final Cache<String, Optional<Long>> longValueCache;
-    private final Cache<String, Optional<Object>> objectValueCache;
+    private final Cache storage = new Cache();
+    private final ParameterSource cachedParameterSource;
 
     public CachingParameterSource(ParameterSource cachedParameterSource) {
-        stringValueCache = new Cache<>(cachedParameterSource::getOptionalString);
-        integerValueCache = new Cache<>(cachedParameterSource::getOptionalInteger);
-        longValueCache = new Cache<>(cachedParameterSource::getOptionalLong);
-        objectValueCache = new Cache<>(cachedParameterSource::getOptionalObject);
+        this.cachedParameterSource = cachedParameterSource;
     }
 
-    private static class Cache<K, V> {
-        private final Map<K, V> content = new HashMap<K, V>();
-        private final Function<K, V> freshValueSource;
+    private static class Cache {
+        private final Map<String, Object> content = new HashMap<>();
 
-        public Cache(Function<K, V> freshValueSource) {
-            this.freshValueSource = freshValueSource;
-        }
-
-        public V get(K key) {
-            return content.computeIfAbsent(key, freshValueSource);
+        public <T> T get(String key, Function<String, T> freshValueSource) {
+            return (T) content.computeIfAbsent(key, freshValueSource);
         }
 
         public void flush() {
@@ -41,27 +31,35 @@ public class CachingParameterSource implements ParameterSource {
 
     @Override
     public Optional<String> getOptionalString(String key) {
-        return stringValueCache.get(key);
+        return storage.get(key, cachedParameterSource::getOptionalString);
     }
 
     @Override
     public Optional<Integer> getOptionalInteger(String key) {
-        return integerValueCache.get(key);
+        return storage.get(key, cachedParameterSource::getOptionalInteger);
     }
 
     @Override
     public Optional<Long> getOptionalLong(String key) {
-        return longValueCache.get(key);
+        return storage.get(key, cachedParameterSource::getOptionalLong);
+    }
+
+    @Override
+    public Optional<Float> getOptionalFloat(String key) {
+        return storage.get(key, cachedParameterSource::getOptionalFloat);
+    }
+
+    @Override
+    public Optional<Double> getOptionalDouble(String key) {
+        return storage.get(key, cachedParameterSource::getOptionalDouble);
     }
 
     @Override
     public Optional<Object> getOptionalObject(String key) {
-        return objectValueCache.get(key);
+        return storage.get(key, cachedParameterSource::getOptionalObject);
     }
 
     public void flush() {
-        stringValueCache.flush();
-        integerValueCache.flush();
-        objectValueCache.flush();
+        storage.flush();
     }
 }

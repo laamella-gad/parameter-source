@@ -11,7 +11,7 @@ public class FallbackParameterSource implements ParameterSource {
     private final ParameterSource primarySource;
     private final ParameterSource fallbackSource;
 
-    public FallbackParameterSource(ParameterSource primarySource, ParameterSource fallbackSource) {
+    FallbackParameterSource(ParameterSource primarySource, ParameterSource fallbackSource) {
         requireNonNull(primarySource);
         requireNonNull(fallbackSource);
         this.primarySource = primarySource;
@@ -46,6 +46,24 @@ public class FallbackParameterSource implements ParameterSource {
     }
 
     @Override
+    public Optional<Float> getOptionalFloat(String key) {
+        Optional<Float> value = primarySource.getOptionalFloat(key);
+        if (value.isPresent()) {
+            return value;
+        }
+        return fallbackSource.getOptionalFloat(key);
+    }
+
+    @Override
+    public Optional<Double> getOptionalDouble(String key) {
+        Optional<Double> value = primarySource.getOptionalDouble(key);
+        if (value.isPresent()) {
+            return value;
+        }
+        return fallbackSource.getOptionalDouble(key);
+    }
+
+    @Override
     public Optional<Object> getOptionalObject(String key) {
         Optional<Object> value = primarySource.getOptionalObject(key);
         if (value.isPresent()) {
@@ -54,6 +72,10 @@ public class FallbackParameterSource implements ParameterSource {
         return fallbackSource.getOptionalObject(key);
     }
 
+    /**
+     * @return the path separator of the primary source. The separator from the secondary source is ignored, which makes
+     * mixing SubParameterSources and FallbackParameterSources tricky.
+     */
     @Override
     public String getPathSeparator() {
         return primarySource.getPathSeparator();

@@ -32,7 +32,35 @@ public interface ObjectParameterSource extends ParameterSource {
             if (o instanceof Long) {
                 return Optional.of((Long) o);
             }
-            throw new ParameterSourceException("%s does not contain an long value.", key);
+            throw new ParameterSourceException("%s does not contain a long value.", key);
+        } else {
+            return Optional.empty();
+        }
+    }
+
+    @Override
+    default Optional<Float> getOptionalFloat(String key) {
+        Optional<Object> optionalObject = getOptionalObject(key);
+        if (optionalObject.isPresent()) {
+            Object o = optionalObject.get();
+            if (o instanceof Float) {
+                return Optional.of((Float) o);
+            }
+            throw new ParameterSourceException("%s does not contain a float value.", key);
+        } else {
+            return Optional.empty();
+        }
+    }
+
+    @Override
+    default Optional<Double> getOptionalDouble(String key) {
+        Optional<Object> optionalObject = getOptionalObject(key);
+        if (optionalObject.isPresent()) {
+            Object o = optionalObject.get();
+            if (o instanceof Double) {
+                return Optional.of((Double) o);
+            }
+            throw new ParameterSourceException("%s does not contain a double value.", key);
         } else {
             return Optional.empty();
         }

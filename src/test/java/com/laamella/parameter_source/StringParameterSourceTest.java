@@ -19,6 +19,20 @@ public class StringParameterSourceTest {
         assertEquals(123123, value);
     }
 
+    @Test
+    public void whenRequestingADoubleThenANumericValueIsConverted() {
+        double value = new StubStringParameterSource("123.123").getDouble("");
+
+        assertEquals(123.123, value, 0);
+    }
+
+    @Test
+    public void whenRequestingAFloatThenANumericValueIsConverted() {
+        float value = new StubStringParameterSource("123.123").getFloat("");
+
+        assertEquals(123.123f, value, 0);
+    }
+
     @Test(expected = ParameterSourceException.class)
     public void whenRequestingAnIntegerThenABadValueFails() {
         new StubStringParameterSource("qqqqq").getInteger("");
