@@ -12,11 +12,13 @@ import java.util.function.Function;
 public class CachingParameterSource implements ParameterSource {
     private final Cache<String, Optional<String>> stringValueCache;
     private final Cache<String, Optional<Integer>> integerValueCache;
+    private final Cache<String, Optional<Long>> longValueCache;
     private final Cache<String, Optional<Object>> objectValueCache;
 
     public CachingParameterSource(ParameterSource cachedParameterSource) {
         stringValueCache = new Cache<>(cachedParameterSource::getOptionalString);
         integerValueCache = new Cache<>(cachedParameterSource::getOptionalInteger);
+        longValueCache = new Cache<>(cachedParameterSource::getOptionalLong);
         objectValueCache = new Cache<>(cachedParameterSource::getOptionalObject);
     }
 
@@ -45,6 +47,11 @@ public class CachingParameterSource implements ParameterSource {
     @Override
     public Optional<Integer> getOptionalInteger(String key) {
         return integerValueCache.get(key);
+    }
+
+    @Override
+    public Optional<Long> getOptionalLong(String key) {
+        return longValueCache.get(key);
     }
 
     @Override

@@ -21,6 +21,11 @@ public interface ParameterSource {
     Optional<Integer> getOptionalInteger(String key);
 
     /**
+     * Retrieves an optional Long from this source by key.
+     */
+    Optional<Long> getOptionalLong(String key);
+
+    /**
      * Retrieves an optional Object from this source by key.
      */
     Optional<Object> getOptionalObject(String key);
@@ -54,6 +59,16 @@ public interface ParameterSource {
     default int getInteger(String key) {
         requireNonNull(key);
         return getOptionalInteger(key).orElseThrow(missingKeyException(key));
+    }
+
+    /**
+     * Retrieves a required long from this source by key.
+     *
+     * @throws ParameterSourceException when the key is missing.
+     */
+    default long getLong(String key) {
+        requireNonNull(key);
+        return getOptionalLong(key).orElseThrow(missingKeyException(key));
     }
 
     /**

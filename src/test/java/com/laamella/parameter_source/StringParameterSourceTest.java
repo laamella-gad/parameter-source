@@ -12,13 +12,6 @@ public class StringParameterSourceTest {
         assertEquals(123, optionalInteger);
     }
 
-    @Test
-    public void whenRequestingAnIntegerThenAHexValueIsConverted() {
-        int optionalInteger = new StubStringParameterSource("0xCAFE").getInteger("");
-
-        assertEquals(0xcafe, optionalInteger);
-    }
-
     @Test(expected = ParameterSourceException.class)
     public void whenRequestingAnIntegerThenABadValueFails() {
         new StubStringParameterSource("qqqqq").getInteger("");

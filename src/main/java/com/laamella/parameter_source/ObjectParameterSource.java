@@ -24,4 +24,17 @@ public interface ObjectParameterSource extends ParameterSource {
             return Optional.empty();
         }
     }
+
+    default Optional<Long> getOptionalLong(String key) {
+        Optional<Object> optionalObject = getOptionalObject(key);
+        if (optionalObject.isPresent()) {
+            Object o = optionalObject.get();
+            if (o instanceof Long) {
+                return Optional.of((Long) o);
+            }
+            throw new ParameterSourceException("%s does not contain an long value.", key);
+        } else {
+            return Optional.empty();
+        }
+    }
 }

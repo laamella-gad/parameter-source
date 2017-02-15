@@ -15,9 +15,21 @@ public interface StringParameterSource extends ParameterSource {
 
         final Optional<String> str = getOptionalString(key);
         try {
-            return str.map(Integer::decode);
+            return str.map(Integer::parseInt);
         } catch (NumberFormatException e) {
             throw new ParameterSourceException("Value %s of %s is not an integer.", str.get(), key);
+        }
+    }
+
+    @Override
+    default Optional<Long> getOptionalLong(String key) {
+        requireNonNull(key);
+
+        final Optional<String> str = getOptionalString(key);
+        try {
+            return str.map(Long::parseLong);
+        } catch (NumberFormatException e) {
+            throw new ParameterSourceException("Value %s of %s is not a long.", str.get(), key);
         }
     }
 
