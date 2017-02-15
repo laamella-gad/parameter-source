@@ -6,9 +6,19 @@
 	<artifactId>parameter-source</artifactId>
 	<version>0.3-SNAPSHOT</version>
 
+    <name>${project.groupId}:${project.artifactId}</name>
+    <description>Parameter Source</description>
+    <url>https://github.com/laamella-gad/parameter-source</url>
+
 	<properties>
 		<slf4j.version>1.7.22</slf4j.version>
 	</properties>
+
+    <developers>
+        <developer>
+            <name>Danny van Bruggen</name>
+        </developer>
+    </developers>
 
 	<build>
 		<plugins>
