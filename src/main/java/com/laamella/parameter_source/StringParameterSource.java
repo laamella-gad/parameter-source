@@ -21,7 +21,7 @@ public abstract class StringParameterSource implements ParameterSource {
         return getOptionalString(key).map(s -> stringToInteger(key, s));
     }
 
-    protected int stringToInteger(String key, String str) {
+    public static int stringToInteger(String key, String str) {
         try {
             return Integer.parseInt(str);
         } catch (NumberFormatException e) {
@@ -43,7 +43,7 @@ public abstract class StringParameterSource implements ParameterSource {
         return getOptionalString(key).map(s -> stringToList(s, i -> i));
     }
 
-    protected <T> List<T> stringToList(String input, Function<String, T> itemConverter) {
+    public static <T> List<T> stringToList(String input, Function<String, T> itemConverter) {
         final List<T> result = new ArrayList<>();
         for (String itemString : input.split(",")) {
             result.add(itemConverter.apply(itemString.trim()));
@@ -51,7 +51,7 @@ public abstract class StringParameterSource implements ParameterSource {
         return result;
     }
 
-    protected long stringToLong(String key, String str) {
+    public static long stringToLong(String key, String str) {
         try {
             return Long.parseLong(str);
         } catch (NumberFormatException e) {
@@ -66,7 +66,7 @@ public abstract class StringParameterSource implements ParameterSource {
         return getOptionalString(key).map(s -> stringToFloat(key, s));
     }
 
-    protected float stringToFloat(String key, String str) {
+    public static float stringToFloat(String key, String str) {
         try {
             return Float.parseFloat(str);
         } catch (NumberFormatException e) {
@@ -81,7 +81,7 @@ public abstract class StringParameterSource implements ParameterSource {
         return getOptionalString(key).map(s -> stringToDouble(key, s));
     }
 
-    protected double stringToDouble(String key, String str) {
+    public static double stringToDouble(String key, String str) {
         try {
             return Double.parseDouble(str);
         } catch (NumberFormatException e) {
@@ -96,7 +96,7 @@ public abstract class StringParameterSource implements ParameterSource {
         return getOptionalString(key).map(s -> stringToBoolean(key, s));
     }
 
-    protected boolean stringToBoolean(String key, String str) {
+    public static boolean stringToBoolean(String key, String str) {
         switch (str.toLowerCase()) {
             case "true":
             case "t":
@@ -126,7 +126,7 @@ public abstract class StringParameterSource implements ParameterSource {
         return getOptionalString(key).map(s -> stringToObject(key, s));
     }
 
-    protected Object stringToObject(String key, String str) {
+    public static Object stringToObject(String key, String str) {
         return str;
     }
 

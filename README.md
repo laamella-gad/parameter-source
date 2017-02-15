@@ -71,9 +71,9 @@ You may want to pass an InitialContext to the constructor instead.
 This stores the key-value pairs in memory and can be used as a fallback for other sources,
 or for testing.
 ```java
-        InMemoryStringParameterSource source = new InMemoryStringParameterSource()
-                .put("abc", "def")
-                .put("ghi", "jkl");
+InMemoryStringParameterSource source = new InMemoryStringParameterSource()
+    .put("abc", "def")
+    .put("ghi", "jkl");
 ```
 Another option is to use the `InMemoryObjectParameterSource` which retrieves values without doing string conversions.
 
