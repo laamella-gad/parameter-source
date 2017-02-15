@@ -21,11 +21,9 @@ public interface ParameterSource {
     Optional<Integer> getOptionalInteger(String key);
 
     /**
-     * Gets an object from the source of class "type".
-     * If the key exists but the value is not of type "type",
-     * the result will be Optional.empty().
+     * Retrieves an optional Object from this source by key.
      */
-    <T> Optional<T> getOptionalObject(String key, Class<T> type);
+    Optional<Object> getOptionalObject(String key);
 
     /**
      * Creates a parameter source that takes its values from this
@@ -59,12 +57,11 @@ public interface ParameterSource {
     }
 
     /**
-     * Retrieves a required int from the source of class "type".by key.
+     * Retrieves a required object from this source by key.
      */
-    default <T> T getObject(String key, Class<T> type) {
+    default Object getObject(String key) {
         requireNonNull(key);
-        requireNonNull(type);
-        return getOptionalObject(key, type).orElseThrow(missingKeyException(key));
+        return getOptionalObject(key).orElseThrow(missingKeyException(key));
     }
 
     /**

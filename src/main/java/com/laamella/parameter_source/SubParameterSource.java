@@ -36,10 +36,9 @@ public class SubParameterSource implements ParameterSource {
     }
 
     @Override
-    public <T> Optional<T> getOptionalObject(String key, Class<T> type) {
+    public Optional<Object> getOptionalObject(String key) {
         requireNonNull(key);
-        requireNonNull(type);
-        return delegate.getOptionalObject(combineKeys(keyPart, key), type);
+        return delegate.getOptionalObject(combineKeys(keyPart, key));
     }
 
     @Override

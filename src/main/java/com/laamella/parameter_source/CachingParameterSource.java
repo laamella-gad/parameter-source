@@ -12,40 +12,12 @@ import java.util.function.Function;
 public class CachingParameterSource implements ParameterSource {
     private final Cache<String, Optional<String>> stringValueCache;
     private final Cache<String, Optional<Integer>> integerValueCache;
-    private final Cache<ObjectKey, Optional<?>> objectValueCache;
-
-    private static final class ObjectKey {
-        public final String key;
-        public final Class<?> type;
-
-        public ObjectKey(String key, Class<?> type) {
-            this.key = key;
-            this.type = type;
-        }
-
-        @Override
-        public boolean equals(Object o) {
-            if (this == o) return true;
-            if (o == null || getClass() != o.getClass()) return false;
-
-            ObjectKey objectKey = (ObjectKey) o;
-
-            if (!key.equals(objectKey.key)) return false;
-            return type.equals(objectKey.type);
-        }
-
-        @Override
-        public int hashCode() {
-            int result = key.hashCode();
-            result = 31 * result + type.hashCode();
-            return result;
-        }
-    }
+    private final Cache<String, Optional<Object>> objectValueCache;
 
     public CachingParameterSource(ParameterSource cachedParameterSource) {
         stringValueCache = new Cache<>(cachedParameterSource::getOptionalString);
         integerValueCache = new Cache<>(cachedParameterSource::getOptionalInteger);
-        objectValueCache = new Cache<>((ok) -> cachedParameterSource.getOptionalObject(ok.key, ok.type));
+        objectValueCache = new Cache<>(cachedParameterSource::getOptionalObject);
     }
 
     private static class Cache<K, V> {
@@ -76,8 +48,8 @@ public class CachingParameterSource implements ParameterSource {
     }
 
     @Override
-    public <T> Optional<T> getOptionalObject(String key, Class<T> type) {
-        return (Optional<T>) objectValueCache.get(new ObjectKey(key, type));
+    public Optional<Object> getOptionalObject(String key) {
+        return objectValueCache.get(key);
     }
 
     public void flush() {

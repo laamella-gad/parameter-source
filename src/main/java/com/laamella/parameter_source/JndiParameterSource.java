@@ -27,17 +27,16 @@ public class JndiParameterSource implements ObjectParameterSource {
     }
 
     @Override
-    public <T> Optional<T> getOptionalObject(String key, Class<T> type) {
+    public Optional<Object> getOptionalObject(String key) {
         requireNonNull(key);
-        requireNonNull(type);
 
         try {
             final Object value = initialContext.lookup(key);
-            if (type.isInstance(value)) {
-                return Optional.of(type.cast(value));
-            }
+            return Optional.ofNullable(value);
         } catch (NamingException e) {
             logger.debug(String.format("Parameter %s not found", key), e);
+        } catch (ClassCastException cce) {
+            throw new ParameterSourceException(cce, "Value found for %s was not of the requested type.", key);
         }
         return Optional.empty();
     }

@@ -6,7 +6,7 @@ import java.util.Optional;
 import java.util.prefs.BackingStoreException;
 import java.util.prefs.Preferences;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
 
 public class PreferencesParameterSourceTest {
     @Test

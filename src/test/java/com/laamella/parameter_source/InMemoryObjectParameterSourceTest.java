@@ -10,7 +10,7 @@ public class InMemoryObjectParameterSourceTest {
         Object o = new Object();
         InMemoryObjectParameterSource src = new InMemoryObjectParameterSource()
                 .put("abc", o);
-        Object abc = src.getObject("abc", Object.class);
+        Object abc = src.getObject("abc");
 
         assertEquals(o, abc);
     }
@@ -18,6 +18,6 @@ public class InMemoryObjectParameterSourceTest {
     @Test(expected = ParameterSourceException.class)
     public void whenAValueIsNotPutInThenItIsNotAvailable() {
         InMemoryObjectParameterSource src = new InMemoryObjectParameterSource();
-        src.getObject("abc", Object.class);
+        src.getObject("abc");
     }
 }

@@ -14,8 +14,8 @@ public class StubObjectParameterSource implements ObjectParameterSource {
     }
 
     @Override
-    public <T> Optional<T> getOptionalObject(String key, Class<T> type) {
-        return Optional.ofNullable(type.cast(stubValue));
+    public Optional<Object> getOptionalObject(String key) {
+        return Optional.ofNullable(stubValue);
     }
 
     public void setStubValue(Object stubValue) {

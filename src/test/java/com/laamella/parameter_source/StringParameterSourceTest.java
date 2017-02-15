@@ -2,8 +2,6 @@ package com.laamella.parameter_source;
 
 import org.junit.Test;
 
-import java.util.Map;
-
 import static org.junit.Assert.assertEquals;
 
 public class StringParameterSourceTest {
@@ -27,10 +25,9 @@ public class StringParameterSourceTest {
     }
 
     @Test
-    public void whenRequestingAnObjectThenItOnlyReturnsAValueWhenTypeIsString() {
+    public void whenRequestingAnObjectThenItOnlyReturnsStrings() {
         StubStringParameterSource source = new StubStringParameterSource("qqqqq");
 
-        assertEquals(false, source.getOptionalObject("", Map.class).isPresent());
-        assertEquals(true, source.getOptionalObject("", String.class).isPresent());
+        assertEquals("qqqqq", source.getObject(""));
     }
 }

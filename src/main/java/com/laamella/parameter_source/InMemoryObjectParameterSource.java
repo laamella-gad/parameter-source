@@ -14,11 +14,10 @@ public class InMemoryObjectParameterSource implements ObjectParameterSource {
     private final Map<String, Object> storage = new HashMap<>();
 
     @Override
-    public <T> Optional<T> getOptionalObject(String key, Class<T> type) {
+    public Optional<Object> getOptionalObject(String key) {
         requireNonNull(key);
-        requireNonNull(type);
 
-        return Optional.ofNullable(type.cast(storage.get(key)));
+        return Optional.ofNullable(storage.get(key));
     }
 
     public InMemoryObjectParameterSource put(String key, Object o) {

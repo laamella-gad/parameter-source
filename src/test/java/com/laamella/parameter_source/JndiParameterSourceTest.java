@@ -4,7 +4,6 @@ import org.junit.Test;
 
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
-
 import java.util.Optional;
 
 import static org.junit.Assert.assertEquals;
@@ -36,10 +35,9 @@ public class JndiParameterSourceTest {
         assertEquals(false, abc.isPresent());
     }
 
-    @Test
+    @Test(expected = ParameterSourceException.class)
     public void whenObjectIsOfWrongTypeThenItIsNotFound() throws NamingException {
         when(initialContextMock.lookup("abc")).thenReturn("def");
-        Optional<Integer> abc = source.getOptionalInteger("abc");
-        assertEquals(false, abc.isPresent());
+        source.getOptionalInteger("abc");
     }
 }
