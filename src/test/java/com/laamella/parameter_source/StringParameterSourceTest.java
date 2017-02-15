@@ -36,6 +36,17 @@ public class StringParameterSourceTest {
     }
 
     @Test
+    public void whenRequestingABooleanThenABooleanValueIsConverted() {
+        boolean value = new StubStringParameterSource("true").getBoolean("");
+
+        assertEquals(true, value);
+
+        value = new StubStringParameterSource("n").getBoolean("");
+
+        assertEquals(false, value);
+    }
+
+    @Test
     public void whenRequestingAStringListThenAStringIsSplitOnCommas() {
         List<String> list = new StubStringParameterSource("henk, piet, klaas").getStringList("");
 

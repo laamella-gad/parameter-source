@@ -74,6 +74,15 @@ public class FallbackParameterSource implements ParameterSource {
     }
 
     @Override
+    public Optional<Boolean> getOptionalBoolean(String key) {
+        Optional<Boolean> value = primarySource.getOptionalBoolean(key);
+        if (value.isPresent()) {
+            return value;
+        }
+        return fallbackSource.getOptionalBoolean(key);
+    }
+
+    @Override
     public Optional<Object> getOptionalObject(String key) {
         Optional<Object> value = primarySource.getOptionalObject(key);
         if (value.isPresent()) {

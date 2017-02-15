@@ -90,6 +90,36 @@ public abstract class StringParameterSource implements ParameterSource {
     }
 
     @Override
+    public Optional<Boolean> getOptionalBoolean(String key) {
+        requireNonNull(key);
+
+        return getOptionalString(key).map(s -> stringToBoolean(key, s));
+    }
+
+    protected boolean stringToBoolean(String key, String str) {
+        switch (str.toLowerCase()) {
+            case "true":
+            case "t":
+            case "y":
+            case "yes":
+            case "1":
+            case "enable":
+            case "enabled":
+                return true;
+            case "false":
+            case "f":
+            case "n":
+            case "no":
+            case "0":
+            case "disable":
+            case "disabled":
+                return false;
+            default:
+                throw new ParameterSourceException("Value %s of %s is not a boolean.", str, key);
+        }
+    }
+
+    @Override
     public Optional<Object> getOptionalObject(String key) {
         requireNonNull(key);
 

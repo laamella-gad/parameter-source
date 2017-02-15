@@ -84,4 +84,18 @@ public abstract class ObjectParameterSource implements ParameterSource {
             return Optional.empty();
         }
     }
+
+    @Override
+    public Optional<Boolean> getOptionalBoolean(String key) {
+        Optional<Object> optionalObject = getOptionalObject(key);
+        if (optionalObject.isPresent()) {
+            Object o = optionalObject.get();
+            if (o instanceof Boolean) {
+                return Optional.of((Boolean) o);
+            }
+            throw new ParameterSourceException("%s does not contain a boolean value.", key);
+        } else {
+            return Optional.empty();
+        }
+    }
 }

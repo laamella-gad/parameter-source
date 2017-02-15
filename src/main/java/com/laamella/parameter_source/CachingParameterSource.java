@@ -61,6 +61,11 @@ public class CachingParameterSource implements ParameterSource {
     }
 
     @Override
+    public Optional<Boolean> getOptionalBoolean(String key) {
+        return storage.get(key, cachedParameterSource::getOptionalBoolean);
+    }
+
+    @Override
     public Optional<Object> getOptionalObject(String key) {
         return storage.get(key, cachedParameterSource::getOptionalObject);
     }

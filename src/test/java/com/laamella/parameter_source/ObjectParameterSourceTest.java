@@ -55,6 +55,15 @@ public class ObjectParameterSourceTest {
     }
 
     @Test
+    public void whenRequestingABooleanAndValueIsABooleanThenItIsReturned() {
+        StubObjectParameterSource source = new StubObjectParameterSource(false);
+
+        boolean value = source.getBoolean("");
+
+        assertEquals(false, value);
+    }
+
+    @Test
     public void whenRequestingAStringListAndValueIsAStringListThenItIsReturned() {
         List<String> list = Arrays.asList("a", "b");
         StubObjectParameterSource source = new StubObjectParameterSource(list);

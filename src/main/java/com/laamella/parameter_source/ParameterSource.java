@@ -42,6 +42,11 @@ public interface ParameterSource {
     Optional<Double> getOptionalDouble(String key);
 
     /**
+     * Retrieves an optional boolean from this source by key.
+     */
+    Optional<Boolean> getOptionalBoolean(String key);
+
+    /**
      * Retrieves an optional Object from this source by key.
      */
     Optional<Object> getOptionalObject(String key);
@@ -115,6 +120,16 @@ public interface ParameterSource {
     default double getDouble(String key) {
         requireNonNull(key);
         return getOptionalDouble(key).orElseThrow(missingKeyException(key));
+    }
+
+    /**
+     * Retrieves a required boolean from this source by key.
+     *
+     * @throws ParameterSourceException when the key is missing.
+     */
+    default boolean getBoolean(String key) {
+        requireNonNull(key);
+        return getOptionalBoolean(key).orElseThrow(missingKeyException(key));
     }
 
     /**
