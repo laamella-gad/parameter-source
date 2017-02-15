@@ -9,7 +9,7 @@ import static java.util.Objects.requireNonNull;
 /**
  * Uses a JNDI InitialContext as the parameter source.
  */
-public class JndiParameterSource implements ObjectParameterSource {
+public class JndiParameterSource extends ObjectParameterSource {
     private final InitialContext initialContext;
 
     public JndiParameterSource() throws NamingException {

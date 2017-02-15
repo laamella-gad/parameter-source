@@ -10,7 +10,7 @@ import static java.util.Objects.requireNonNull;
  * This source has no external storage.
  * It only contains key-value pairs that have been put in using the "put" method.
  */
-public class InMemoryStringParameterSource implements StringParameterSource {
+public class InMemoryStringParameterSource extends StringParameterSource {
     private final Map<String, String> storage = new HashMap<>();
 
     public InMemoryStringParameterSource put(String key, String s) {

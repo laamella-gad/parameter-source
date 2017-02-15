@@ -6,7 +6,7 @@ import java.util.Optional;
  * A string parameter source that returns the same string for all keys.
  * Suggested use is testing.
  */
-public class StubStringParameterSource implements StringParameterSource {
+public class StubStringParameterSource extends StringParameterSource {
     private String stubValue;
 
     public StubStringParameterSource(String stubValue) {

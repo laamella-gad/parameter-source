@@ -7,7 +7,7 @@ import java.util.function.Supplier;
 /**
  * Queries a database table for values using JDBC.
  */
-public class JdbcDatabaseParameterSource implements StringParameterSource {
+public class JdbcDatabaseParameterSource extends StringParameterSource {
     private final String selectStatement;
     private final Supplier<Connection> connectionSupplier;
 

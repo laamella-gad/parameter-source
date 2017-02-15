@@ -10,7 +10,7 @@ import static java.util.Objects.requireNonNull;
  * Note that due to the implementation of Java Preferences,
  * errors in the backing store will go unnoticed and the source will return only "Optional.empty()"
  */
-public class PreferencesParameterSource implements StringParameterSource {
+public class PreferencesParameterSource extends StringParameterSource {
     private final Preferences preferences;
 
     /**

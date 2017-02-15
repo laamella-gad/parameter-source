@@ -7,12 +7,14 @@ import java.util.Optional;
  * If a retrieve value is not of the requested type,
  * conversion will be attempted.
  */
-public interface ObjectParameterSource extends ParameterSource {
-    default Optional<String> getOptionalString(String key) {
+public abstract class ObjectParameterSource implements ParameterSource {
+    @Override
+    public Optional<String> getOptionalString(String key) {
         return getOptionalObject(key).map(Object::toString);
     }
 
-    default Optional<Integer> getOptionalInteger(String key) {
+    @Override
+    public Optional<Integer> getOptionalInteger(String key) {
         Optional<Object> optionalObject = getOptionalObject(key);
         if (optionalObject.isPresent()) {
             Object o = optionalObject.get();
@@ -25,7 +27,8 @@ public interface ObjectParameterSource extends ParameterSource {
         }
     }
 
-    default Optional<Long> getOptionalLong(String key) {
+    @Override
+    public Optional<Long> getOptionalLong(String key) {
         Optional<Object> optionalObject = getOptionalObject(key);
         if (optionalObject.isPresent()) {
             Object o = optionalObject.get();
@@ -39,7 +42,7 @@ public interface ObjectParameterSource extends ParameterSource {
     }
 
     @Override
-    default Optional<Float> getOptionalFloat(String key) {
+    public Optional<Float> getOptionalFloat(String key) {
         Optional<Object> optionalObject = getOptionalObject(key);
         if (optionalObject.isPresent()) {
             Object o = optionalObject.get();
@@ -53,7 +56,7 @@ public interface ObjectParameterSource extends ParameterSource {
     }
 
     @Override
-    default Optional<Double> getOptionalDouble(String key) {
+    public Optional<Double> getOptionalDouble(String key) {
         Optional<Object> optionalObject = getOptionalObject(key);
         if (optionalObject.isPresent()) {
             Object o = optionalObject.get();
