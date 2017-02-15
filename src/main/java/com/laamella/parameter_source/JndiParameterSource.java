@@ -1,8 +1,5 @@
 package com.laamella.parameter_source;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
 import java.util.Optional;
@@ -13,8 +10,6 @@ import static java.util.Objects.requireNonNull;
  * Uses a JNDI InitialContext as the parameter source.
  */
 public class JndiParameterSource implements ObjectParameterSource {
-    private final Logger logger = LoggerFactory.getLogger(JndiParameterSource.class);
-
     private final InitialContext initialContext;
 
     public JndiParameterSource() throws NamingException {
@@ -34,7 +29,7 @@ public class JndiParameterSource implements ObjectParameterSource {
             final Object value = initialContext.lookup(key);
             return Optional.ofNullable(value);
         } catch (NamingException e) {
-            logger.debug(String.format("Parameter %s not found", key), e);
+            // treat this case as "not found"
         } catch (ClassCastException cce) {
             throw new ParameterSourceException(cce, "Value found for %s was not of the requested type.", key);
         }
