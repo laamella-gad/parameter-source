@@ -7,7 +7,7 @@ import java.util.Optional;
  * Suggested use is testing.
  */
 public class StubObjectParameterSource implements ObjectParameterSource {
-    private final Object stubValue;
+    private Object stubValue;
 
     public StubObjectParameterSource(Object stubValue) {
         this.stubValue = stubValue;
@@ -16,5 +16,9 @@ public class StubObjectParameterSource implements ObjectParameterSource {
     @Override
     public <T> Optional<T> getOptionalObject(String key, Class<T> type) {
         return Optional.ofNullable(type.cast(stubValue));
+    }
+
+    public void setStubValue(Object stubValue) {
+        this.stubValue = stubValue;
     }
 }
