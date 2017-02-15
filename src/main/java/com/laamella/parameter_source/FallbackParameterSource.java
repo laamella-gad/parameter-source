@@ -6,12 +6,6 @@ import static java.util.Objects.requireNonNull;
 
 /**
  * Supports the "withFallback" method.
- * <p>Takes values from primarySource
- * unless that doesn't know the key,
- * then it delegates to fallbackSource.
- * If that doesn't have the key either
- * it will return the usual Optional.empty().
- * <p>This can be chained to create a fallback chain.</p>
  */
 public class FallbackParameterSource implements ParameterSource {
     private final ParameterSource primarySource;

@@ -42,7 +42,8 @@ public class SubParameterSource implements ParameterSource {
         return delegate.getOptionalObject(combineKeys(keyPart, key), type);
     }
 
-    public ParameterSource subSource(String keyPart) {
+    @Override
+    public SubParameterSource subSource(String keyPart) {
         requireNonNull(keyPart);
         return new SubParameterSource(this, keyPart, keyCombiner);
     }

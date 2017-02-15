@@ -6,7 +6,7 @@ import static org.junit.Assert.assertEquals;
 
 public class FallbackParameterSourceTest {
     @Test
-    public void whenFallingBackItWorks() {
+    public void whenFallingBackThenItWorks() {
         FallbackParameterSource parameterSource = new InMemoryStringParameterSource()
                 .put("a", "1")
                 .withFallback(new InMemoryStringParameterSource()

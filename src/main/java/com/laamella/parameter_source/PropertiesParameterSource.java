@@ -62,28 +62,4 @@ public class PropertiesParameterSource implements StringParameterSource {
         requireNonNull(key);
         return Optional.ofNullable(properties.getProperty(key));
     }
-
-    /**
-     * Creates a parameter source that prepends "keyPart" to every key requested.
-     * This can be chained to go deeper and deeper.
-     * Note that a "." between "keyPart" and requested keys is enforced.
-     */
-    public SubParameterSource subSource(String keyPart) {
-        requireNonNull(keyPart);
-        return new SubParameterSource(this, keyPart, (a, b) -> {
-            while (!a.isEmpty() && a.endsWith(".")) {
-                a = a.substring(0, a.length() - 1);
-            }
-            while (!b.isEmpty() && b.startsWith(".")) {
-                b = b.substring(1);
-            }
-            if (a.isEmpty()) {
-                return b;
-            }
-            if (b.isEmpty()) {
-                return a;
-            }
-            return a + "." + b;
-        });
-    }
 }

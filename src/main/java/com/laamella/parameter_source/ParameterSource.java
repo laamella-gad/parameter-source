@@ -31,8 +31,7 @@ public interface ParameterSource {
      * Creates a parameter source that takes its values from this
      * parameter source.
      * If values are missing, it looks in the fallback instead.
-     *
-     * @see FallbackParameterSource
+     * <p>This can be chained to create a fallback chain.
      */
     default FallbackParameterSource withFallback(ParameterSource fallback) {
         requireNonNull(fallback);
@@ -66,5 +65,29 @@ public interface ParameterSource {
         requireNonNull(key);
         requireNonNull(type);
         return getOptionalObject(key, type).orElseThrow(missingKeyException(key));
+    }
+
+    /**
+     * Creates a parameter source that prepends "keyPart" to every key requested.
+     * This can be chained to go deeper and deeper.
+     * Note that a "." between "keyPart" and requested keys is enforced.
+     */
+    default SubParameterSource subSource(String keyPart) {
+        requireNonNull(keyPart);
+        return new SubParameterSource(this, keyPart, (a, b) -> {
+            while (!a.isEmpty() && a.endsWith(".")) {
+                a = a.substring(0, a.length() - 1);
+            }
+            while (!b.isEmpty() && b.startsWith(".")) {
+                b = b.substring(1);
+            }
+            if (a.isEmpty()) {
+                return b;
+            }
+            if (b.isEmpty()) {
+                return a;
+            }
+            return a + "." + b;
+        });
     }
 }
