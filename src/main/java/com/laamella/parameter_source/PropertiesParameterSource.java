@@ -62,4 +62,9 @@ public class PropertiesParameterSource implements StringParameterSource {
         requireNonNull(key);
         return Optional.ofNullable(properties.getProperty(key));
     }
+
+    @Override
+    public String getPathSeparator() {
+        return ".";
+    }
 }

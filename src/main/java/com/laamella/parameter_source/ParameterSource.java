@@ -75,10 +75,10 @@ public interface ParameterSource {
     default SubParameterSource subSource(String keyPart) {
         requireNonNull(keyPart);
         return new SubParameterSource(this, keyPart, (a, b) -> {
-            while (!a.isEmpty() && a.endsWith(".")) {
+            while (!a.isEmpty() && a.endsWith(getPathSeparator())) {
                 a = a.substring(0, a.length() - 1);
             }
-            while (!b.isEmpty() && b.startsWith(".")) {
+            while (!b.isEmpty() && b.startsWith(getPathSeparator())) {
                 b = b.substring(1);
             }
             if (a.isEmpty()) {
@@ -87,7 +87,14 @@ public interface ParameterSource {
             if (b.isEmpty()) {
                 return a;
             }
-            return a + "." + b;
+            return a + getPathSeparator() + b;
         });
+    }
+
+    /**
+     * @return the String that separates the parts of a key into a hierarchy.
+     */
+    default String getPathSeparator() {
+        return "/";
     }
 }

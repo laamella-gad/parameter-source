@@ -45,6 +45,11 @@ public class FallbackParameterSource implements ParameterSource {
         return fallbackSource.getOptionalObject(key, type);
     }
 
+    @Override
+    public String getPathSeparator() {
+        return primarySource.getPathSeparator();
+    }
+
     public ParameterSource getPrimarySource() {
         return primarySource;
     }
