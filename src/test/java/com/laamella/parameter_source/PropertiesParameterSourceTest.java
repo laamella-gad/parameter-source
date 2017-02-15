@@ -8,25 +8,25 @@ import java.util.Optional;
 import static org.junit.Assert.assertEquals;
 
 public class PropertiesParameterSourceTest {
-    private final PropertiesParameterSource propertiesParameterSource = new PropertiesParameterSource("test.properties");
+    private final PropertiesParameterSource source = new PropertiesParameterSource("test.properties");
 
     @Test
     public void whenWeGetAKeyThenWeGetAValue() throws IOException {
-        Optional<String> abc = propertiesParameterSource.getOptionalString("abc");
+        Optional<String> abc = source.getOptionalString("abc");
 
         assertEquals("def", abc.get());
     }
 
     @Test
     public void whenWeGetAKeyThatDoesNotExistThenWeDontGetAValue() throws IOException {
-        Optional<String> abc = propertiesParameterSource.getOptionalString("qoqoq");
+        Optional<String> abc = source.getOptionalString("qoqoq");
 
         assertEquals(false, abc.isPresent());
     }
 
     @Test
     public void whenWeSubSourceThePathGetsConstructedCorrectly() {
-        final SubParameterSource log4j = propertiesParameterSource.subSource("log4j");
+        final SubParameterSource log4j = source.subSource("log4j");
 
         assertEquals("INFO, stdout", log4j.getString("rootLogger"));
 

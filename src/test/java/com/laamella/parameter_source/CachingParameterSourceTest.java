@@ -2,9 +2,7 @@ package com.laamella.parameter_source;
 
 import org.junit.Test;
 
-import java.util.Optional;
-
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
 
 public class CachingParameterSourceTest {
     @Test
