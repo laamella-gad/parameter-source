@@ -35,6 +35,13 @@ public class SubParameterSource implements ParameterSource {
         return delegate.getOptionalInteger(combineKeys(keyPart, key));
     }
 
+    @Override
+    public <T> Optional<T> getOptionalObject(String key, Class<T> type) {
+        requireNonNull(key);
+        requireNonNull(type);
+        return delegate.getOptionalObject(combineKeys(keyPart, key), type);
+    }
+
     public ParameterSource subSource(String keyPart) {
         requireNonNull(keyPart);
         return new SubParameterSource(this, keyPart, keyCombiner);
@@ -43,7 +50,7 @@ public class SubParameterSource implements ParameterSource {
     public String combineKeys(String first, String second) {
         requireNonNull(first);
         requireNonNull(second);
-        
+
         return keyCombiner.apply(first, second);
     }
 }

@@ -20,4 +20,19 @@ public interface StringParameterSource extends ParameterSource {
             throw new ParameterSourceException("Value %s of %s is not an integer.", str.get(), key);
         }
     }
+
+    /**
+     * Since there is no real object support for this source,
+     * we simply return values only when the type is String.
+     */
+    @Override
+    default <T> Optional<T> getOptionalObject(String key, Class<T> type) {
+        requireNonNull(key);
+        requireNonNull(type);
+
+        if (type == String.class) {
+            return (Optional<T>) getOptionalString(key);
+        }
+        return Optional.empty();
+    }
 }
