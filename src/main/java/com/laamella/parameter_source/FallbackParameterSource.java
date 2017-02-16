@@ -1,5 +1,7 @@
 package com.laamella.parameter_source;
 
+import java.net.URI;
+import java.net.URL;
 import java.util.List;
 import java.util.Optional;
 
@@ -89,6 +91,24 @@ public class FallbackParameterSource implements ParameterSource {
             return value;
         }
         return fallbackSource.getOptionalObject(key);
+    }
+
+    @Override
+    public Optional<URL> getOptionalUrl(String key) {
+        Optional<URL> value = primarySource.getOptionalUrl(key);
+        if (value.isPresent()) {
+            return value;
+        }
+        return fallbackSource.getOptionalUrl(key);
+    }
+
+    @Override
+    public Optional<URI> getOptionalUri(String key) {
+        Optional<URI> value = primarySource.getOptionalUri(key);
+        if (value.isPresent()) {
+            return value;
+        }
+        return fallbackSource.getOptionalUri(key);
     }
 
     /**

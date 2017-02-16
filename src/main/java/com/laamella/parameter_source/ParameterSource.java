@@ -1,5 +1,7 @@
 package com.laamella.parameter_source;
 
+import java.net.URI;
+import java.net.URL;
 import java.time.Duration;
 import java.util.List;
 import java.util.Optional;
@@ -51,6 +53,16 @@ public interface ParameterSource {
      * Retrieves an optional Object from this source by key.
      */
     Optional<Object> getOptionalObject(String key);
+
+    /**
+     * Retrieves an optional URL from this source by key.
+     */
+    Optional<URL> getOptionalUrl(String key);
+
+    /**
+     * Retrieves an optional URI from this source by key.
+     */
+    Optional<URI> getOptionalUri(String key);
 
     /**
      * Retrieves an optional duration from this source by key.
@@ -148,6 +160,26 @@ public interface ParameterSource {
     default Duration getDuration(String key) {
         requireNonNull(key);
         return getOptionalDuration(key).orElseThrow(missingKeyException(key));
+    }
+
+    /**
+     * Retrieves a required URL from this source by key.
+     *
+     * @throws ParameterSourceException when the key is missing.
+     */
+    default URL getUrl(String key) {
+        requireNonNull(key);
+        return getOptionalUrl(key).orElseThrow(missingKeyException(key));
+    }
+
+    /**
+     * Retrieves a required URI from this source by key.
+     *
+     * @throws ParameterSourceException when the key is missing.
+     */
+    default URI getUri(String key) {
+        requireNonNull(key);
+        return getOptionalUri(key).orElseThrow(missingKeyException(key));
     }
 
     /**

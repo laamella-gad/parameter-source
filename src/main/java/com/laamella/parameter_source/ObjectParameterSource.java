@@ -1,5 +1,7 @@
 package com.laamella.parameter_source;
 
+import java.net.URI;
+import java.net.URL;
 import java.util.List;
 import java.util.Optional;
 
@@ -31,6 +33,16 @@ public abstract class ObjectParameterSource implements ParameterSource {
         return getOptionalObject(key).map(o -> objectToLong(key, o));
     }
 
+
+    @Override
+    public Optional<URL> getOptionalUrl(String key) {
+        return getOptionalObject(key).map(o -> objectToUrl(key, o));
+    }
+
+    @Override
+    public Optional<URI> getOptionalUri(String key) {
+        return getOptionalObject(key).map(o -> objectToUri(key, o));
+    }
 
     @Override
     public Optional<Float> getOptionalFloat(String key) {

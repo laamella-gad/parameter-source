@@ -1,5 +1,7 @@
 package com.laamella.parameter_source;
 
+import java.net.URI;
+import java.net.URL;
 import java.util.List;
 import java.util.Optional;
 
@@ -69,6 +71,18 @@ public class SubParameterSource implements ParameterSource {
     public Optional<Object> getOptionalObject(String key) {
         requireNonNull(key);
         return delegate.getOptionalObject(combineKeys(keyPart, key));
+    }
+
+    @Override
+    public Optional<URL> getOptionalUrl(String key) {
+        requireNonNull(key);
+        return delegate.getOptionalUrl(combineKeys(keyPart, key));
+    }
+
+    @Override
+    public Optional<URI> getOptionalUri(String key) {
+        requireNonNull(key);
+        return delegate.getOptionalUri(combineKeys(keyPart, key));
     }
 
     @Override

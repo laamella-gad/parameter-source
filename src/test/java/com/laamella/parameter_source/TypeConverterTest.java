@@ -2,6 +2,8 @@ package com.laamella.parameter_source;
 
 import org.junit.Test;
 
+import java.net.URI;
+import java.net.URL;
 import java.util.Arrays;
 import java.util.List;
 
@@ -84,6 +86,22 @@ public class TypeConverterTest {
     @Test
     public void whenRequestingAFloatThenANumericValueIsConverted() {
         assertEquals(123.123f, stringToFloat("key", "123.123"), 0);
+    }
+
+    @Test
+    public void whenRequestingAUriThenAUriValueIsConverted() {
+        URI uri = stringToUri("key", "urn:isbn:0-486-27557-4");
+        assertEquals("urn", uri.getScheme());
+        assertEquals("isbn:0-486-27557-4", uri.getSchemeSpecificPart());
+    }
+
+    @Test
+    public void whenRequestingAUrlThenAUrlValueIsConverted() {
+        URL url = stringToUrl("key", "http://localhost:8080/abc");
+        assertEquals("http", url.getProtocol());
+        assertEquals("localhost", url.getHost());
+        assertEquals(8080, url.getPort());
+        assertEquals("/abc", url.getPath());
     }
 
     @Test

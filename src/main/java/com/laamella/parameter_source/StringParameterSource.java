@@ -1,5 +1,7 @@
 package com.laamella.parameter_source;
 
+import java.net.URI;
+import java.net.URL;
 import java.util.List;
 import java.util.Optional;
 
@@ -25,6 +27,16 @@ public abstract class StringParameterSource implements ParameterSource {
         requireNonNull(key);
 
         return getOptionalString(key).map(s -> stringToLong(key, s));
+    }
+
+    @Override
+    public Optional<URL> getOptionalUrl(String key) {
+        return null;
+    }
+
+    @Override
+    public Optional<URI> getOptionalUri(String key) {
+        return null;
     }
 
     @Override

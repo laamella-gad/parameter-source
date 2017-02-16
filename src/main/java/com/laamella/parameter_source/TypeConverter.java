@@ -1,5 +1,9 @@
 package com.laamella.parameter_source;
 
+import java.net.MalformedURLException;
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.net.URL;
 import java.time.Duration;
 import java.util.ArrayList;
 import java.util.List;
@@ -7,6 +11,8 @@ import java.util.function.BiFunction;
 import java.util.function.Function;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
+import static java.util.Objects.requireNonNull;
 
 /**
  * All type conversion code
@@ -26,6 +32,9 @@ public class TypeConverter {
     private static final Pattern SEMICOLONS_DURATION_PATTERN = Pattern.compile("^(?:(?:(\\d*):)?(\\d*):)?(\\d*)\\.?(\\d*)$");
 
     public static Duration stringToDuration(String key, String s) {
+        requireNonNull(key);
+        requireNonNull(s);
+
         final Matcher isoMatcher = P_DURATION_PATTERN.matcher(s);
         if (isoMatcher.matches()) {
             return
@@ -63,6 +72,8 @@ public class TypeConverter {
     }
 
     public static int stringToInteger(String key, String str) {
+        requireNonNull(key);
+        requireNonNull(str);
         try {
             return Integer.parseInt(str);
         } catch (NumberFormatException e) {
@@ -71,6 +82,9 @@ public class TypeConverter {
     }
 
     public static <T> List<T> stringToList(String key, String input, Function<String, T> itemConverter) {
+        requireNonNull(key);
+        requireNonNull(input);
+        requireNonNull(itemConverter);
         final List<T> result = new ArrayList<>();
         for (String itemString : input.split(",")) {
             result.add(itemConverter.apply(itemString.trim()));
@@ -79,6 +93,8 @@ public class TypeConverter {
     }
 
     public static long stringToLong(String key, String str) {
+        requireNonNull(key);
+        requireNonNull(str);
         try {
             return Long.parseLong(str);
         } catch (NumberFormatException e) {
@@ -86,7 +102,29 @@ public class TypeConverter {
         }
     }
 
+    public static URL stringToUrl(String key, String str) {
+        requireNonNull(key);
+        requireNonNull(str);
+        try {
+            return new URI(str).toURL();
+        } catch (URISyntaxException | MalformedURLException e) {
+            throw new ParameterSourceException("Value %s of %s is not a URL.", str, key);
+        }
+    }
+
+    public static URI stringToUri(String key, String str) {
+        requireNonNull(key);
+        requireNonNull(str);
+        try {
+            return new URI(str);
+        } catch (URISyntaxException e) {
+            throw new ParameterSourceException("Value %s of %s is not a URI.", str, key);
+        }
+    }
+
     public static float stringToFloat(String key, String str) {
+        requireNonNull(key);
+        requireNonNull(str);
         try {
             return Float.parseFloat(str);
         } catch (NumberFormatException e) {
@@ -95,6 +133,8 @@ public class TypeConverter {
     }
 
     public static double stringToDouble(String key, String str) {
+        requireNonNull(key);
+        requireNonNull(str);
         try {
             return Double.parseDouble(str);
         } catch (NumberFormatException e) {
@@ -103,6 +143,8 @@ public class TypeConverter {
     }
 
     public static boolean stringToBoolean(String key, String str) {
+        requireNonNull(key);
+        requireNonNull(str);
         switch (str.toLowerCase()) {
             case "true":
             case "t":
@@ -126,21 +168,32 @@ public class TypeConverter {
     }
 
     public static Object stringToObject(String key, String str) {
+        requireNonNull(key);
+        requireNonNull(str);
         return str;
     }
 
     public static String objectToString(String key, Object o) {
+        requireNonNull(key);
+        requireNonNull(o);
         return o.toString();
     }
 
     public static Integer objectToInteger(String key, Object o) {
+        requireNonNull(key);
+        requireNonNull(o);
         if (o instanceof Integer) {
             return (Integer) o;
+        }
+        if (o instanceof String) {
+            return stringToInteger(key, (String) o);
         }
         throw new ParameterSourceException("%s does not contain an integer value.", key);
     }
 
     public static <T> List<T> objectToList(String key, Object o, Class<T> type) {
+        requireNonNull(key);
+        requireNonNull(o);
         if (o instanceof List) {
             // TODO we could check if there are really objects of type "type" in the list
             return (List<T>) o;
@@ -149,31 +202,75 @@ public class TypeConverter {
     }
 
     public static Long objectToLong(String key, Object o) {
+        requireNonNull(key);
+        requireNonNull(o);
         if (o instanceof Long) {
             return (Long) o;
+        }
+        if (o instanceof String) {
+            return stringToLong(key, (String) o);
         }
         throw new ParameterSourceException("%s does not contain an integer value.", key);
     }
 
     public static Float objectToFloat(String key, Object o) {
+        requireNonNull(key);
+        requireNonNull(o);
         if (o instanceof Float) {
             return (Float) o;
+        }
+        if (o instanceof String) {
+            return stringToFloat(key, (String) o);
         }
         throw new ParameterSourceException("%s does not contain a float value.", key);
     }
 
     public static Double objectToDouble(String key, Object o) {
+        requireNonNull(key);
+        requireNonNull(o);
         if (o instanceof Double) {
             return (Double) o;
+        }
+        if (o instanceof String) {
+            return stringToDouble(key, (String) o);
         }
         throw new ParameterSourceException("%s does not contain a double value.", key);
     }
 
     public static Boolean objectToBoolean(String key, Object o) {
+        requireNonNull(key);
+        requireNonNull(o);
         if (o instanceof Boolean) {
             return (Boolean) o;
         }
+        if (o instanceof String) {
+            return stringToBoolean(key, (String) o);
+        }
         throw new ParameterSourceException("%s does not contain a boolean value.", key);
+    }
+
+    public static URI objectToUri(String key, Object o) {
+        requireNonNull(key);
+        requireNonNull(o);
+        if (o instanceof URI) {
+            return (URI) o;
+        }
+        if (o instanceof String) {
+            return stringToUri(key, (String) o);
+        }
+        throw new ParameterSourceException("%s does not contain a URI value.", key);
+    }
+
+    public static URL objectToUrl(String key, Object o) {
+        requireNonNull(key);
+        requireNonNull(o);
+        if (o instanceof URL) {
+            return (URL) o;
+        }
+        if (o instanceof String) {
+            return stringToUrl(key, (String) o);
+        }
+        throw new ParameterSourceException("%s does not contain a URL value.", key);
     }
 
 }

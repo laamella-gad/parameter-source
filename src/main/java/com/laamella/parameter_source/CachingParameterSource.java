@@ -1,5 +1,7 @@
 package com.laamella.parameter_source;
 
+import java.net.URI;
+import java.net.URL;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -68,6 +70,16 @@ public class CachingParameterSource implements ParameterSource {
     @Override
     public Optional<Object> getOptionalObject(String key) {
         return storage.get(key, cachedParameterSource::getOptionalObject);
+    }
+
+    @Override
+    public Optional<URL> getOptionalUrl(String key) {
+        return storage.get(key, cachedParameterSource::getOptionalUrl);
+    }
+
+    @Override
+    public Optional<URI> getOptionalUri(String key) {
+        return storage.get(key, cachedParameterSource::getOptionalUri);
     }
 
     public void flush() {
