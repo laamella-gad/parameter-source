@@ -125,6 +125,11 @@ Traditional time format inspired:
 16 -> 16 seconds
 ```
 
+### The enum format
+
+Enums values are case insensitive,
+and underscores, whitespace, and quotations marks are ignored.
+
 ## Reducing repetition in keys
 
 Often keys are (or emulate) a path.
