@@ -111,6 +111,15 @@ public class FallbackParameterSource implements ParameterSource {
         return fallbackSource.getOptionalUri(key);
     }
 
+    @Override
+    public <T extends Enum<?>> Optional<T> getOptionalEnum(String key, Class<T> enumType) {
+        Optional<T> value = primarySource.getOptionalEnum(key, enumType);
+        if (value.isPresent()) {
+            return value;
+        }
+        return fallbackSource.getOptionalEnum(key, enumType);
+    }
+
     /**
      * @return the path separator of the primary source. The separator from the secondary source is ignored, which makes
      * mixing SubParameterSources and FallbackParameterSources tricky.

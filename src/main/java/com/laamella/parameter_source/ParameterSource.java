@@ -65,6 +65,11 @@ public interface ParameterSource {
     Optional<URI> getOptionalUri(String key);
 
     /**
+     * Retrieves an optional enum from this source by key.
+     */
+    <T extends Enum<?>> Optional<T> getOptionalEnum(String key, Class<T> enumType);
+
+    /**
      * Retrieves an optional duration from this source by key.
      */
     default Optional<Duration> getOptionalDuration(String key) {
@@ -182,6 +187,16 @@ public interface ParameterSource {
         return getOptionalUri(key).orElseThrow(missingKeyException(key));
     }
 
+    /**
+     * Retrieves a required URI from this source by key.
+     *
+     * @throws ParameterSourceException when the key is missing.
+     */
+    default <T extends Enum<?>> T getEnum(String key, Class<T> enumType) {
+        requireNonNull(key);
+        return getOptionalEnum(key, enumType).orElseThrow(missingKeyException(key));
+    }
+    
     /**
      * Retrieves a required object from this source by key.
      */

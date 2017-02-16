@@ -173,6 +173,27 @@ public class TypeConverter {
         return str;
     }
 
+    public static <T extends Enum<?>> T stringToEnum(String key, String str, Class<T> enumType) {
+        requireNonNull(key);
+        requireNonNull(str);
+        for (T t : enumType.getEnumConstants()) {
+            if (fuzzy(t.name()).equals(fuzzy(str))) {
+                return t;
+            }
+        }
+        throw new ParameterSourceException("Value %s of %s is not a %s.", str, key, enumType.getSimpleName());
+    }
+
+    private static String fuzzy(String str) {
+        return str
+                .toLowerCase()
+                .replace("_", "")
+                .replace("\t", "")
+                .replace("\"", "")
+                .replace("'", "")
+                .replace(" ", "");
+    }
+
     public static String objectToString(String key, Object o) {
         requireNonNull(key);
         requireNonNull(o);
@@ -271,6 +292,18 @@ public class TypeConverter {
             return stringToUrl(key, (String) o);
         }
         throw new ParameterSourceException("%s does not contain a URL value.", key);
+    }
+
+    public static <T extends Enum> T objectToEnum(String key, Object o, Class<T> enumType) {
+        requireNonNull(key);
+        requireNonNull(o);
+        if (enumType.isInstance(o)) {
+            return enumType.cast(o);
+        }
+        if (o instanceof String) {
+            return stringToEnum(key, (String) o, enumType);
+        }
+        throw new ParameterSourceException("%s does not contain a %s value.", key, enumType.getSimpleName());
     }
 
 }

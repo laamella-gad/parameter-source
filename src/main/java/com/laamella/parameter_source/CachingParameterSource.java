@@ -73,6 +73,11 @@ public class CachingParameterSource implements ParameterSource {
     }
 
     @Override
+    public <T extends Enum<?>> Optional<T> getOptionalEnum(String key, Class<T> enumType) {
+        return storage.get(key, k -> cachedParameterSource.getOptionalEnum(k, enumType));
+    }
+
+    @Override
     public Optional<URL> getOptionalUrl(String key) {
         return storage.get(key, cachedParameterSource::getOptionalUrl);
     }

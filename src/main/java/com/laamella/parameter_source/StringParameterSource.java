@@ -23,6 +23,13 @@ public abstract class StringParameterSource implements ParameterSource {
     }
 
     @Override
+    public <T extends Enum<?>> Optional<T> getOptionalEnum(String key, Class<T> enumType) {
+        requireNonNull(key);
+
+        return getOptionalString(key).map(s -> stringToEnum(key, s, enumType));
+    }
+
+    @Override
     public Optional<Long> getOptionalLong(String key) {
         requireNonNull(key);
 

@@ -104,6 +104,14 @@ public class TypeConverterTest {
         assertEquals("/abc", url.getPath());
     }
 
+    enum X {A, B_B, C}
+
+    @Test
+    public void whenRequestingAnEnumThenAnEumValueIsConverted() {
+        assertEquals(X.A, stringToEnum("key", "A", X.class));
+        assertEquals(X.B_B, stringToEnum("key", " 'b b' ", X.class));
+    }
+
     @Test
     public void whenRequestingABooleanThenABooleanValueIsConverted() {
         assertEquals(true, stringToBoolean("key", "true"));

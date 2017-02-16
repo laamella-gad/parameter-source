@@ -40,6 +40,11 @@ public abstract class ObjectParameterSource implements ParameterSource {
     }
 
     @Override
+    public <T extends Enum<?>> Optional<T> getOptionalEnum(String key, Class<T> enumType) {
+        return getOptionalEnum(key, enumType).map(o -> objectToEnum(key, o, enumType));
+    }
+
+    @Override
     public Optional<URI> getOptionalUri(String key) {
         return getOptionalObject(key).map(o -> objectToUri(key, o));
     }

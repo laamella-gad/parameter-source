@@ -86,6 +86,12 @@ public class SubParameterSource implements ParameterSource {
     }
 
     @Override
+    public <T extends Enum<?>> Optional<T> getOptionalEnum(String key, Class<T> enumType) {
+        requireNonNull(key);
+        return delegate.getOptionalEnum(combineKeys(keyPart, key), enumType);
+    }
+
+    @Override
     public SubParameterSource subSource(String keyPart) {
         requireNonNull(keyPart);
         return new SubParameterSource(this, keyPart, getPathSeparator());
