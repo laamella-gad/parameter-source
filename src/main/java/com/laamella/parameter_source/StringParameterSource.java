@@ -1,10 +1,9 @@
 package com.laamella.parameter_source;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-import java.util.function.Function;
 
+import static com.laamella.parameter_source.TypeConverter.*;
 import static java.util.Objects.requireNonNull;
 
 /**
@@ -21,14 +20,6 @@ public abstract class StringParameterSource implements ParameterSource {
         return getOptionalString(key).map(s -> stringToInteger(key, s));
     }
 
-    public static int stringToInteger(String key, String str) {
-        try {
-            return Integer.parseInt(str);
-        } catch (NumberFormatException e) {
-            throw new ParameterSourceException("Value %s of %s is not an integer.", str, key);
-        }
-    }
-
     @Override
     public Optional<Long> getOptionalLong(String key) {
         requireNonNull(key);
@@ -40,23 +31,7 @@ public abstract class StringParameterSource implements ParameterSource {
     public Optional<List<String>> getOptionalStringList(String key) {
         requireNonNull(key);
 
-        return getOptionalString(key).map(s -> stringToList(s, i -> i));
-    }
-
-    public static <T> List<T> stringToList(String input, Function<String, T> itemConverter) {
-        final List<T> result = new ArrayList<>();
-        for (String itemString : input.split(",")) {
-            result.add(itemConverter.apply(itemString.trim()));
-        }
-        return result;
-    }
-
-    public static long stringToLong(String key, String str) {
-        try {
-            return Long.parseLong(str);
-        } catch (NumberFormatException e) {
-            throw new ParameterSourceException("Value %s of %s is not a long.", str, key);
-        }
+        return getOptionalString(key).map(s -> stringToList(key, s, i -> i));
     }
 
     @Override
@@ -66,27 +41,11 @@ public abstract class StringParameterSource implements ParameterSource {
         return getOptionalString(key).map(s -> stringToFloat(key, s));
     }
 
-    public static float stringToFloat(String key, String str) {
-        try {
-            return Float.parseFloat(str);
-        } catch (NumberFormatException e) {
-            throw new ParameterSourceException("Value %s of %s is not a float.", str, key);
-        }
-    }
-
     @Override
     public Optional<Double> getOptionalDouble(String key) {
         requireNonNull(key);
 
         return getOptionalString(key).map(s -> stringToDouble(key, s));
-    }
-
-    public static double stringToDouble(String key, String str) {
-        try {
-            return Double.parseDouble(str);
-        } catch (NumberFormatException e) {
-            throw new ParameterSourceException("Value %s of %s is not a double.", str, key);
-        }
     }
 
     @Override
@@ -96,38 +55,10 @@ public abstract class StringParameterSource implements ParameterSource {
         return getOptionalString(key).map(s -> stringToBoolean(key, s));
     }
 
-    public static boolean stringToBoolean(String key, String str) {
-        switch (str.toLowerCase()) {
-            case "true":
-            case "t":
-            case "y":
-            case "yes":
-            case "1":
-            case "enable":
-            case "enabled":
-                return true;
-            case "false":
-            case "f":
-            case "n":
-            case "no":
-            case "0":
-            case "disable":
-            case "disabled":
-                return false;
-            default:
-                throw new ParameterSourceException("Value %s of %s is not a boolean.", str, key);
-        }
-    }
-
     @Override
     public Optional<Object> getOptionalObject(String key) {
         requireNonNull(key);
 
         return getOptionalString(key).map(s -> stringToObject(key, s));
     }
-
-    public static Object stringToObject(String key, String str) {
-        return str;
-    }
-
 }

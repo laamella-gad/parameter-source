@@ -103,7 +103,27 @@ In general the sources will spend some effort to convert a value to the type the
 In sources that inherit from `StringParameterSource` these conversions will consist of parsing the string value in some way.
 In sources that inherit from `ObjectParameterSource` there is more chance of an exact type match which requires no conversions,
 but if the type of the value does not match the required type, some conversions will still be attempted.
-The Javadoc specifies the approach taken.
+
+### The duration format
+
+When requesting a duration, we get the string value for the key, then attempt to parse it as follows:
+
+ISO 8601 inspired:
+```
+1D2H3M4S5MS6NS -> 1 day + 2 hours + 3 minutes + 4 seconds + 5 milliseconds + 6 nanoseconds
+1d2h3m4s5ms6ns -> the same
+1d 2h 3m 4s 5ms 6ns -> the same
+1d -> 1 day
+1000ms -> 1000 milliseconds
+3m 10s -> 3 minutes + 10 seconds
+```
+
+Traditional time format inspired:
+```
+12:14:16.1234 -> 12 hours + 14 minutes + 16 seconds + 123.4 milliseconds
+14:16 -> 14 minutes + 16 seconds
+16 -> 16 seconds
+```
 
 ## Reducing repetition in keys
 

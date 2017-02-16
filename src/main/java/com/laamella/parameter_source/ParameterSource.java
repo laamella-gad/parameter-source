@@ -1,5 +1,6 @@
 package com.laamella.parameter_source;
 
+import java.time.Duration;
 import java.util.List;
 import java.util.Optional;
 
@@ -50,6 +51,13 @@ public interface ParameterSource {
      * Retrieves an optional Object from this source by key.
      */
     Optional<Object> getOptionalObject(String key);
+
+    /**
+     * Retrieves an optional duration from this source by key.
+     */
+    default Optional<Duration> getOptionalDuration(String key) {
+        return getOptionalString(key).map(s -> TypeConverter.stringToDuration(key, s));
+    }
 
     /**
      * Creates a parameter source that takes its values from this
@@ -130,6 +138,16 @@ public interface ParameterSource {
     default boolean getBoolean(String key) {
         requireNonNull(key);
         return getOptionalBoolean(key).orElseThrow(missingKeyException(key));
+    }
+
+    /**
+     * Retrieves a required duration from this source by key.
+     *
+     * @throws ParameterSourceException when the key is missing.
+     */
+    default Duration getDuration(String key) {
+        requireNonNull(key);
+        return getOptionalDuration(key).orElseThrow(missingKeyException(key));
     }
 
     /**
