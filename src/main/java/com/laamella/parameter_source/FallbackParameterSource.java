@@ -94,6 +94,15 @@ public class FallbackParameterSource implements ParameterSource {
     }
 
     @Override
+    public Optional<Class<?>> getOptionalClass(String key) {
+        Optional<Class<?>> value = primarySource.getOptionalClass(key);
+        if (value.isPresent()) {
+            return value;
+        }
+        return fallbackSource.getOptionalClass(key);
+    }
+
+    @Override
     public Optional<URL> getOptionalUrl(String key) {
         Optional<URL> value = primarySource.getOptionalUrl(key);
         if (value.isPresent()) {

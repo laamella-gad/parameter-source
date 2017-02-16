@@ -173,6 +173,16 @@ public class TypeConverter {
         return str;
     }
 
+    public static Class<?> stringToClass(String key, String str) {
+        requireNonNull(key);
+        requireNonNull(str);
+        try {
+            return Class.forName(str);
+        } catch (ClassNotFoundException e) {
+            throw new ParameterSourceException("Value %s if %s is not a class.", str, key);
+        }
+    }
+
     public static <T extends Enum<?>> T stringToEnum(String key, String str, Class<T> enumType) {
         requireNonNull(key);
         requireNonNull(str);
@@ -306,4 +316,15 @@ public class TypeConverter {
         throw new ParameterSourceException("%s does not contain a %s value.", key, enumType.getSimpleName());
     }
 
+    public static Class<?> objectToClass(String key, Object o) {
+        requireNonNull(key);
+        requireNonNull(o);
+        if (o instanceof Class) {
+            return (Class<?>) o;
+        }
+        if (o instanceof String) {
+            return stringToClass(key, (String) o);
+        }
+        throw new ParameterSourceException("%s does not contain a Class value.", key);
+    }
 }

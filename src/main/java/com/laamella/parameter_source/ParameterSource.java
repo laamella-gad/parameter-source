@@ -55,6 +55,11 @@ public interface ParameterSource {
     Optional<Object> getOptionalObject(String key);
 
     /**
+     * Retrieves an optional Class from this source by key.
+     */
+    Optional<Class<?>> getOptionalClass(String key);
+
+    /**
      * Retrieves an optional URL from this source by key.
      */
     Optional<URL> getOptionalUrl(String key);
@@ -196,13 +201,21 @@ public interface ParameterSource {
         requireNonNull(key);
         return getOptionalEnum(key, enumType).orElseThrow(missingKeyException(key));
     }
-    
+
     /**
      * Retrieves a required object from this source by key.
      */
     default Object getObject(String key) {
         requireNonNull(key);
         return getOptionalObject(key).orElseThrow(missingKeyException(key));
+    }
+
+    /**
+     * Retrieves a required class from this source by key.
+     */
+    default Class<?> getClass(String key) {
+        requireNonNull(key);
+        return getOptionalClass(key).orElseThrow(missingKeyException(key));
     }
 
     /**

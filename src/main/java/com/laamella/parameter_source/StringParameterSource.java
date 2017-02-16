@@ -30,6 +30,13 @@ public abstract class StringParameterSource implements ParameterSource {
     }
 
     @Override
+    public Optional<Class<?>> getOptionalClass(String key) {
+        requireNonNull(key);
+
+        return getOptionalString(key).map(s -> stringToClass(key, s));
+    }
+
+    @Override
     public Optional<Long> getOptionalLong(String key) {
         requireNonNull(key);
 
@@ -38,12 +45,18 @@ public abstract class StringParameterSource implements ParameterSource {
 
     @Override
     public Optional<URL> getOptionalUrl(String key) {
-        return null;
+        requireNonNull(key);
+
+        return getOptionalString(key).map(s -> stringToUrl(key, s));
+
     }
 
     @Override
     public Optional<URI> getOptionalUri(String key) {
-        return null;
+        requireNonNull(key);
+
+        return getOptionalString(key).map(s -> stringToUri(key, s));
+
     }
 
     @Override

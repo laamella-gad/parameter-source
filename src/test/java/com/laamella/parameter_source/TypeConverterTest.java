@@ -137,4 +137,9 @@ public class TypeConverterTest {
     public void whenRequestingAnObjectThenItOnlyReturnsStrings() {
         assertEquals("qqqqq", stringToObject("key", "qqqqq"));
     }
+
+    @Test
+    public void whenRequestingAClassThenItReturnsAClass() {
+        assertEquals(Integer.class, stringToClass("key", "java.lang.Integer"));
+    }
 }
