@@ -1,11 +1,13 @@
 package com.laamella.parameter_source;
 
+import java.io.UnsupportedEncodingException;
 import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.time.Duration;
 import java.util.ArrayList;
+import java.util.Base64;
 import java.util.List;
 import java.util.function.BiFunction;
 import java.util.function.Function;
@@ -202,6 +204,16 @@ public class TypeConverter {
                 .replace("\"", "")
                 .replace("'", "")
                 .replace(" ", "");
+    }
+
+    public static String stringToUnobfuscatedString(String key, String str) {
+        requireNonNull(key);
+        requireNonNull(str);
+        try {
+            return new String(Base64.getDecoder().decode(str), "ASCII");
+        } catch (UnsupportedEncodingException | IllegalArgumentException e) {
+            throw new ParameterSourceException(e, "Value %s of %s cannot be base64 decoded.", str, key);
+        }
     }
 
     public static String objectToString(String key, Object o) {

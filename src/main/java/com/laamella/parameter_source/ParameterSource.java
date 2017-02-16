@@ -7,6 +7,8 @@ import java.util.List;
 import java.util.Optional;
 
 import static com.laamella.parameter_source.ParameterSourceException.missingKeyException;
+import static com.laamella.parameter_source.TypeConverter.stringToDuration;
+import static com.laamella.parameter_source.TypeConverter.stringToUnobfuscatedString;
 import static java.util.Objects.requireNonNull;
 
 /**
@@ -15,9 +17,16 @@ import static java.util.Objects.requireNonNull;
  */
 public interface ParameterSource {
     /**
-     * Retrieves a String from this source by key.
+     * Retrieves a string from this source by key.
      */
     Optional<String> getOptionalString(String key);
+
+    /**
+     * Retrieves an obfuscated string from this source by key.
+     */
+    default Optional<String> getOptionalObfuscatedString(String key) {
+        return getOptionalString(key).map(s -> stringToUnobfuscatedString(key, s));
+    }
 
     /**
      * Retrieves a list of Strings from this source by key.
@@ -78,7 +87,7 @@ public interface ParameterSource {
      * Retrieves an optional duration from this source by key.
      */
     default Optional<Duration> getOptionalDuration(String key) {
-        return getOptionalString(key).map(s -> TypeConverter.stringToDuration(key, s));
+        return getOptionalString(key).map(s -> stringToDuration(key, s));
     }
 
     /**
@@ -93,13 +102,23 @@ public interface ParameterSource {
     }
 
     /**
-     * Retrieves a required String from this source by key.
+     * Retrieves a required string from this source by key.
      *
      * @throws ParameterSourceException when the key is missing.
      */
     default String getString(String key) {
         requireNonNull(key);
         return getOptionalString(key).orElseThrow(missingKeyException(key));
+    }
+
+    /**
+     * Retrieves a required obfuscated string from this source by key.
+     *
+     * @throws ParameterSourceException when the key is missing.
+     */
+    default String getObfuscatedString(String key) {
+        requireNonNull(key);
+        return getOptionalObfuscatedString(key).orElseThrow(missingKeyException(key));
     }
 
     /**

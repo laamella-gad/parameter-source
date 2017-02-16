@@ -142,4 +142,9 @@ public class TypeConverterTest {
     public void whenRequestingAClassThenItReturnsAClass() {
         assertEquals(Integer.class, stringToClass("key", "java.lang.Integer"));
     }
+
+    @Test
+    public void unobfuscateAString() {
+        assertEquals("some string", stringToUnobfuscatedString("key", "c29tZSBzdHJpbmc="));
+    }
 }
