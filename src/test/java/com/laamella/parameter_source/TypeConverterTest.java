@@ -17,6 +17,9 @@ public class TypeConverterTest {
         assertEquals("PT0.000000001S", stringToDuration("", "1ns").toString());
         assertEquals("PT120H1S", stringToDuration("", "5D 1S").toString());
         assertEquals("PT51H4M5.006000007S", stringToDuration("", "2d 3h 4m 5s 6ms 7ns").toString());
+        assertEquals("PT51H4M5.006000007S", stringToDuration("", "2 d 3 h 4 m 5 s 6 ms 7 ns").toString());
+        assertEquals("PT51H4M5.006000007S", stringToDuration("", "2 days 3 hours 4 minutes 5 seconds 6 milliseconds 7 nanoseconds").toString());
+        assertEquals("PT25H1M1.001000001S", stringToDuration("", "1 day 1 hour 1 minute 1 second 1 millisecond 1 nanosecond").toString());
     }
 
     @Test

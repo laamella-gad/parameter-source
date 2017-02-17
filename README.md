@@ -106,8 +106,10 @@ ISO 8601 inspired:
 1d2h3m4s5ms6ns       -> the same
 1d 2h 3m 4s 5ms 6ns  -> the same
 1d                   -> 1 day
+1 day                -> 1 day
 1000ms               -> 1000 milliseconds
 3m 10s               -> 3 minutes + 10 seconds
+3 minutes 10 seconds -> 3 minutes + 10 seconds
 ```
 
 Traditional time format inspired:

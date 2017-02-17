@@ -23,12 +23,12 @@ public class TypeConverter {
 
     private static final Pattern P_DURATION_PATTERN = Pattern.compile(
             "^" +
-                    "(?:(\\d+)[Dd])?\\s*" +
-                    "(?:(\\d+)[Hh])?\\s*" +
-                    "(?:(\\d+)[Mm])?\\s*" +
-                    "(?:(\\d+)[Ss])?\\s*" +
-                    "(?:(\\d+)[Mm][Ss])?\\s*" +
-                    "(?:(\\d+)[Nn][Ss])?\\s*" +
+                    "(?:(\\d+)\\s*(?:d|days?))?\\s*" +
+                    "(?:(\\d+)\\s*(?:h|hours?))?\\s*" +
+                    "(?:(\\d+)\\s*(?:m|minutes?))?\\s*" +
+                    "(?:(\\d+)\\s*(?:s|seconds?))?\\s*" +
+                    "(?:(\\d+)\\s*(?:ms|milliseconds?))?\\s*" +
+                    "(?:(\\d+)\\s*(?:ns|nanoseconds?))?\\s*" +
                     "$");
 
     private static final Pattern SEMICOLONS_DURATION_PATTERN = Pattern.compile("^(?:(?:(\\d*):)?(\\d*):)?(\\d*)\\.?(\\d*)$");
@@ -37,7 +37,7 @@ public class TypeConverter {
         requireNonNull(key);
         requireNonNull(s);
 
-        final Matcher isoMatcher = P_DURATION_PATTERN.matcher(s);
+        final Matcher isoMatcher = P_DURATION_PATTERN.matcher(s.toLowerCase());
         if (isoMatcher.matches()) {
             return
                     add(isoMatcher.group(1), Duration::plusDays,
