@@ -29,7 +29,7 @@ Put this in your pom.xml:
 <dependency>
 	<groupId>com.laamella</groupId>
 	<artifactId>parameter-source</artifactId>
-	<version>0.3</version>
+	<version>0.4</version>
 </dependency>
 ```
 
