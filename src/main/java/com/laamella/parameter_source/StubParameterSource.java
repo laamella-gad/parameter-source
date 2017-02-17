@@ -6,10 +6,10 @@ import java.util.Optional;
  * An object parameter source that returns the same object for all keys.
  * Suggested use is testing.
  */
-public class StubObjectParameterSource extends ObjectParameterSource {
+public class StubParameterSource implements ParameterSource {
     private Object stubValue;
 
-    public StubObjectParameterSource(Object stubValue) {
+    public StubParameterSource(Object stubValue) {
         this.stubValue = stubValue;
     }
 

@@ -4,11 +4,11 @@ import org.junit.Test;
 
 import static org.junit.Assert.assertEquals;
 
-public class InMemoryObjectParameterSourceTest {
+public class InMemoryParameterSourceTest {
     @Test
     public void whenAValueIsPutInThenItIsAvailable() {
         Object o = new Object();
-        InMemoryObjectParameterSource src = new InMemoryObjectParameterSource()
+        InMemoryParameterSource src = new InMemoryParameterSource()
                 .put("abc", o);
         Object abc = src.getObject("abc");
 
@@ -17,7 +17,7 @@ public class InMemoryObjectParameterSourceTest {
 
     @Test(expected = ParameterSourceException.class)
     public void whenAValueIsNotPutInThenItIsNotAvailable() {
-        InMemoryObjectParameterSource src = new InMemoryObjectParameterSource();
+        InMemoryParameterSource src = new InMemoryParameterSource();
         src.getObject("abc");
     }
 }

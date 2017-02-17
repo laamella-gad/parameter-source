@@ -15,7 +15,7 @@ Perceived problems are:
 - arcane implementations making unit testing difficult
 
 Offered solutions are:
-- an API that has methods that will either fail when a required parameter is missing, or will deliver a Java 8 Optional when the parameter is not required
+- an API that has methods that will either fail hard when a required parameter is missing, or will deliver a Java 8 Optional when the parameter is not required
 - file handling and type conversion work as tight as possible.
 If a parameter is correct, it will be delivered, otherwise it will throw an exception so that an application does not start in an undefined state.
 - tight support for the kind of values that are often seen as application parameters: strings, durations, urls...
@@ -71,11 +71,10 @@ You may want to pass an InitialContext to the constructor instead.
 This stores the key-value pairs in memory and can be used as a fallback for other sources,
 or for testing.
 ```java
-InMemoryStringParameterSource source = new InMemoryStringParameterSource()
+InMemoryParameterSource source = new InMemoryParameterSource()
     .put("abc", "def")
     .put("ghi", "jkl");
 ```
-Another option is to use the `InMemoryObjectParameterSource` which retrieves values without doing string conversions.
 
 ## Getting an optional string value
 Getters that mention "Optional" in their name are optional.
@@ -97,32 +96,25 @@ String value = source.getString("abc");
 
 The pattern described above for string is the same for other types.
 
-## Type conversions
-
-In general the sources will spend some effort to convert a value to the type the user requests.
-In sources that inherit from `StringParameterSource` these conversions will consist of parsing the string value in some way.
-In sources that inherit from `ObjectParameterSource` there is more chance of an exact type match which requires no conversions,
-but if the type of the value does not match the required type, some conversions will still be attempted.
-
 ### The duration format
 
 When requesting a duration, we get the string value for the key, then attempt to parse it as follows:
 
 ISO 8601 inspired:
 ```
-1D2H3M4S5MS6NS -> 1 day + 2 hours + 3 minutes + 4 seconds + 5 milliseconds + 6 nanoseconds
-1d2h3m4s5ms6ns -> the same
-1d 2h 3m 4s 5ms 6ns -> the same
-1d -> 1 day
-1000ms -> 1000 milliseconds
-3m 10s -> 3 minutes + 10 seconds
+1D2H3M4S5MS6NS       -> 1 day + 2 hours + 3 minutes + 4 seconds + 5 milliseconds + 6 nanoseconds
+1d2h3m4s5ms6ns       -> the same
+1d 2h 3m 4s 5ms 6ns  -> the same
+1d                   -> 1 day
+1000ms               -> 1000 milliseconds
+3m 10s               -> 3 minutes + 10 seconds
 ```
 
 Traditional time format inspired:
 ```
-12:14:16.1234 -> 12 hours + 14 minutes + 16 seconds + 123.4 milliseconds
-14:16 -> 14 minutes + 16 seconds
-16 -> 16 seconds
+12:14:16.1234  -> 12 hours + 14 minutes + 16 seconds + 123.4 milliseconds
+14:16          -> 14 minutes + 16 seconds
+16             -> 16 seconds
 ```
 
 ### The enum format
@@ -130,6 +122,19 @@ Traditional time format inspired:
 Enums values are case insensitive,
 and underscores, whitespace, and quotations marks are ignored.
 
+## Type conversions in general
+
+The general pattern is:
+1. get the value of the key
+1. is the type of the value of the type that was requested? Return it.
+1. is the type of the value related to the type that was requested? Convert it and return it.
+1. is the type of the value `String`? Try to parse it, and construct and return the requested type.
+1. fail with a `ParameterSourceException`
+
+Some requested types may skip step 2 because they have no commonly used type.
+
+So in general, the pattern is to do maximum effort to return a value, but without causing unexpected behaviour. 
+ 
 ## Reducing repetition in keys
 
 Often keys are (or emulate) a path.
@@ -175,10 +180,24 @@ it might help to use "subSource" to set the path so tight that the keys do not n
 
 ## Stubbing a source for unit testing
 
-`StubStringParameterSource` and `StubObjectParameterSource` are meant for testing purposes.
+`StubParameterSource` are meant for testing.
 These return the contained stub value for every key.
 Note that conversions will still happen,
 so storing a string stub value and requesting an integer will try to convert the string to an integer.
+
+## Writing your own parameter source
+
+First, extend `ParameterSource`.
+Now you will have to choose between overriding `getOptionalObject` or `getOptionalString`.
+If your source is a true object store, meaning that it can store values of any type, override `getOptionalObject`.
+If your source is a string store, meaning that it stores only strings, override `getOptionalString`.
+
+Try to catch any exceptions and wrap them in `ParameterSourceException`s.
+
+If you want to override the handling of a certain type,
+always override the optional version of the method since the required version always calls the optional one.
+Consider opening an issue on the github project if you disagree with the default behaviour.
+Keep to the pattern indicated in "type conversions in general."
 
 ## The project
 

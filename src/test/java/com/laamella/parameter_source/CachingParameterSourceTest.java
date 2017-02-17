@@ -7,7 +7,7 @@ import static org.junit.Assert.assertEquals;
 public class CachingParameterSourceTest {
     @Test
     public void cachingWorks() {
-        StubStringParameterSource stubSource = new StubStringParameterSource("one");
+        StubParameterSource stubSource = new StubParameterSource("one");
         CachingParameterSource cachingSource = new CachingParameterSource(stubSource);
 
         String a1 = cachingSource.getString("a");

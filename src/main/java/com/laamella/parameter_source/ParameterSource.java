@@ -7,8 +7,7 @@ import java.util.List;
 import java.util.Optional;
 
 import static com.laamella.parameter_source.ParameterSourceException.missingKeyException;
-import static com.laamella.parameter_source.TypeConverter.stringToDuration;
-import static com.laamella.parameter_source.TypeConverter.stringToUnobfuscatedString;
+import static com.laamella.parameter_source.TypeConverter.*;
 import static java.util.Objects.requireNonNull;
 
 /**
@@ -19,74 +18,116 @@ public interface ParameterSource {
     /**
      * Retrieves a string from this source by key.
      */
-    Optional<String> getOptionalString(String key);
+    default Optional<String> getOptionalString(String key) {
+        requireNonNull(key);
+        return getOptionalObject(key).map(o -> objectToString(key, o));
+    }
 
     /**
-     * Retrieves an obfuscated string from this source by key.
+     * Retrieves an optional Integer from this source by key.
      */
-    default Optional<String> getOptionalObfuscatedString(String key) {
-        return getOptionalString(key).map(s -> stringToUnobfuscatedString(key, s));
+    default Optional<Integer> getOptionalInteger(String key) {
+        requireNonNull(key);
+        return getOptionalObject(key).map(o -> objectToInteger(key, o));
     }
 
     /**
      * Retrieves a list of Strings from this source by key.
      */
-    Optional<List<String>> getOptionalStringList(String key);
-
-    /**
-     * Retrieves an optional Integer from this source by key.
-     */
-    Optional<Integer> getOptionalInteger(String key);
+    default Optional<List<String>> getOptionalStringList(String key) {
+        requireNonNull(key);
+        return getOptionalObject(key).map(o -> objectToList(key, o, String.class));
+    }
 
     /**
      * Retrieves an optional Long from this source by key.
      */
-    Optional<Long> getOptionalLong(String key);
+    default Optional<Long> getOptionalLong(String key) {
+        requireNonNull(key);
+        return getOptionalObject(key).map(o -> objectToLong(key, o));
+    }
 
-    /**
-     * Retrieves an optional Float from this source by key.
-     */
-    Optional<Float> getOptionalFloat(String key);
-
-    /**
-     * Retrieves an optional Double from this source by key.
-     */
-    Optional<Double> getOptionalDouble(String key);
-
-    /**
-     * Retrieves an optional boolean from this source by key.
-     */
-    Optional<Boolean> getOptionalBoolean(String key);
-
-    /**
-     * Retrieves an optional Object from this source by key.
-     */
-    Optional<Object> getOptionalObject(String key);
-
-    /**
-     * Retrieves an optional Class from this source by key.
-     */
-    Optional<Class<?>> getOptionalClass(String key);
 
     /**
      * Retrieves an optional URL from this source by key.
      */
-    Optional<URL> getOptionalUrl(String key);
+    default Optional<URL> getOptionalUrl(String key) {
+        requireNonNull(key);
+        return getOptionalObject(key).map(o -> objectToUrl(key, o));
+    }
 
     /**
-     * Retrieves an optional URI from this source by key.
+     * Retrieves an optional Class from this source by key.
      */
-    Optional<URI> getOptionalUri(String key);
+    default Optional<Class<?>> getOptionalClass(String key) {
+        requireNonNull(key);
+        return getOptionalObject(key).map(o -> objectToClass(key, o));
+    }
 
     /**
      * Retrieves an optional enum from this source by key.
      */
-    <T extends Enum<?>> Optional<T> getOptionalEnum(String key, Class<T> enumType);
+    default <T extends Enum<?>> Optional<T> getOptionalEnum(String key, Class<T> enumType) {
+        requireNonNull(key);
+        return getOptionalObject(key).map(o -> objectToEnum(key, o, enumType));
+    }
+
+    /**
+     * Retrieves an optional URI from this source by key.
+     */
+    default Optional<URI> getOptionalUri(String key) {
+        requireNonNull(key);
+        return getOptionalObject(key).map(o -> objectToUri(key, o));
+    }
+
+    /**
+     * Retrieves an optional Float from this source by key.
+     */
+    default Optional<Float> getOptionalFloat(String key) {
+        requireNonNull(key);
+        return getOptionalObject(key).map(o -> objectToFloat(key, o));
+    }
+
+
+    /**
+     * Retrieves an optional Double from this source by key.
+     */
+    default Optional<Double> getOptionalDouble(String key) {
+        requireNonNull(key);
+        return getOptionalObject(key).map(o -> objectToDouble(key, o));
+    }
+
+
+    /**
+     * Retrieves an optional boolean from this source by key.
+     */
+    default Optional<Boolean> getOptionalBoolean(String key) {
+        requireNonNull(key);
+        return getOptionalObject(key).map(o -> objectToBoolean(key, o));
+    }
+
+    /**
+     * Retrieves an obfuscated string from this source by key.
+     */
+    default Optional<String> getOptionalObfuscatedString(String key) {
+        requireNonNull(key);
+        return getOptionalString(key).map(s -> stringToUnobfuscatedString(key, s));
+    }
+
+    /**
+     * Retrieves an optional Object from this source by key.
+     */
+    default Optional<Object> getOptionalObject(String key) {
+        requireNonNull(key);
+        return getOptionalString(key).map(s -> stringToObject(key, s));
+    }
+
 
     /**
      * Retrieves an optional duration from this source by key.
      */
     default Optional<Duration> getOptionalDuration(String key) {
+        requireNonNull(key);
         return getOptionalString(key).map(s -> stringToDuration(key, s));
     }
 

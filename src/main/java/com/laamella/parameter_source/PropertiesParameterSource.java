@@ -11,7 +11,7 @@ import static java.util.Objects.requireNonNull;
  * Wraps a Java Properties object to give it the ParameterSource interface.
  * Can handle loading properties if required.
  */
-public class PropertiesParameterSource extends StringParameterSource {
+public class PropertiesParameterSource implements ParameterSource {
     private final Properties properties;
 
     /**
