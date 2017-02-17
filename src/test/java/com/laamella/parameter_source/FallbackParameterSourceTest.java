@@ -7,11 +7,11 @@ import static org.junit.Assert.assertEquals;
 public class FallbackParameterSourceTest {
     @Test
     public void whenFallingBackThenItWorks() {
-        FallbackParameterSource parameterSource = new InMemoryStringParameterSource()
+        FallbackParameterSource parameterSource = new InMemoryParameterSource()
                 .put("a", "1")
-                .withFallback(new InMemoryStringParameterSource()
+                .withFallback(new InMemoryParameterSource()
                         .put("b", "2")
-                        .withFallback(new InMemoryStringParameterSource()
+                        .withFallback(new InMemoryParameterSource()
                                 .put("a", "3")));
 
         assertEquals("1", parameterSource.getString("a"));
