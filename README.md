@@ -119,6 +119,30 @@ Traditional time format inspired:
 16             -> 16 seconds
 ```
 
+### The byte size format
+
+When requesting a size in bytes, we get the string value for the key, then attempt to parse it as follows:
+
+```
+0 -> 0 bytes
+10 -> 10 bytes
+10 bytes -> 10 bytes
+10B -> 10 bytes
+10KB -> 10 kilobytes
+1 kilobyte 512B -> 1536 bytes
+```
+Supported sizes are:
+
+```
+eb exabyte(s)
+pb petabyte(s)
+tb terabyte(s)
+gb gigabyte(s)
+mb megabyte(s)
+kb kilobyte(s)
+b byte(s)
+```
+
 ### The enum format
 
 Enums values are case insensitive,
