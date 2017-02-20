@@ -15,23 +15,23 @@ import static org.junit.Assert.assertEquals;
 public class TypeConverterTest {
     @Test
     public void durationsInPseudoIso8601() {
-        assertEquals("PT0.001S", stringToDuration("", "1ms").toString());
-        assertEquals("PT0.000000001S", stringToDuration("", "1ns").toString());
-        assertEquals("PT120H1S", stringToDuration("", "5D 1S").toString());
-        assertEquals("PT51H4M5.006000007S", stringToDuration("", "2d 3h 4m 5s 6ms 7ns").toString());
-        assertEquals("PT51H4M5.006000007S", stringToDuration("", "2 d 3 h 4 m 5 s 6 ms 7 ns").toString());
-        assertEquals("PT51H4M5.006000007S", stringToDuration("", "2 days 3 hours 4 minutes 5 seconds 6 milliseconds 7 nanoseconds").toString());
-        assertEquals("PT25H1M1.001000001S", stringToDuration("", "1 day 1 hour 1 minute 1 second 1 millisecond 1 nanosecond").toString());
+        assertEquals("PT0.001S", parseDuration("", "1ms").toString());
+        assertEquals("PT0.000000001S", parseDuration("", "1ns").toString());
+        assertEquals("PT120H1S", parseDuration("", "5D 1S").toString());
+        assertEquals("PT51H4M5.006000007S", parseDuration("", "2d 3h 4m 5s 6ms 7ns").toString());
+        assertEquals("PT51H4M5.006000007S", parseDuration("", "2 d 3 h 4 m 5 s 6 ms 7 ns").toString());
+        assertEquals("PT51H4M5.006000007S", parseDuration("", "2 days 3 hours 4 minutes 5 seconds 6 milliseconds 7 nanoseconds").toString());
+        assertEquals("PT25H1M1.001000001S", parseDuration("", "1 day 1 hour 1 minute 1 second 1 millisecond 1 nanosecond").toString());
     }
 
     @Test
     public void durationsWithSemicolons() {
-        assertEquals("PT10S", stringToDuration("", ":10").toString());
-        assertEquals("PT10M10S", stringToDuration("", "10:10").toString());
-        assertEquals("PT14H12M10S", stringToDuration("", "14:12:10").toString());
-        assertEquals("PT14H12M10.123S", stringToDuration("", "14:12:10.123").toString());
-        assertEquals("PT0S", stringToDuration("", "0").toString());
-        assertEquals("PT12.345S", stringToDuration("", "12.345").toString());
+        assertEquals("PT10S", parseDuration("", ":10").toString());
+        assertEquals("PT10M10S", parseDuration("", "10:10").toString());
+        assertEquals("PT14H12M10S", parseDuration("", "14:12:10").toString());
+        assertEquals("PT14H12M10.123S", parseDuration("", "14:12:10.123").toString());
+        assertEquals("PT0S", parseDuration("", "0").toString());
+        assertEquals("PT12.345S", parseDuration("", "12.345").toString());
     }
 
     @Test
@@ -75,34 +75,34 @@ public class TypeConverterTest {
 
     @Test
     public void whenRequestingAnIntegerThenANumericValueIsConverted() {
-        assertEquals(123, stringToInteger("key", "123"));
+        assertEquals(new Integer(123), objectToInteger("key", "123"));
     }
 
     @Test
     public void whenRequestingALongThenANumericValueIsConverted() {
-        assertEquals(123123, stringToLong("key", "123123"));
+        assertEquals(new Long(123123), objectToLong("key", "123123"));
     }
 
     @Test
     public void whenRequestingADoubleThenANumericValueIsConverted() {
-        assertEquals(123.123, stringToDouble("key", "123.123"), 0);
+        assertEquals(123.123, objectToDouble("key", "123.123"), 0);
     }
 
     @Test
     public void whenRequestingAFloatThenANumericValueIsConverted() {
-        assertEquals(123.123f, stringToFloat("key", "123.123"), 0);
+        assertEquals(123.123f, objectToFloat("key", "123.123"), 0);
     }
 
     @Test
     public void whenRequestingAUriThenAUriValueIsConverted() {
-        URI uri = stringToUri("key", "urn:isbn:0-486-27557-4");
+        URI uri = objectToUri("key", "urn:isbn:0-486-27557-4");
         assertEquals("urn", uri.getScheme());
         assertEquals("isbn:0-486-27557-4", uri.getSchemeSpecificPart());
     }
 
     @Test
     public void whenRequestingAUrlThenAUrlValueIsConverted() {
-        URL url = stringToUrl("key", "http://localhost:8080/abc");
+        URL url = objectToUrl("key", "http://localhost:8080/abc");
         assertEquals("http", url.getProtocol());
         assertEquals("localhost", url.getHost());
         assertEquals(8080, url.getPort());
@@ -119,19 +119,19 @@ public class TypeConverterTest {
 
     @Test
     public void whenRequestingAnEnumThenAnEumValueIsConverted() {
-        assertEquals(X.A, stringToEnum("key", "A", X.class));
-        assertEquals(X.B_B, stringToEnum("key", " 'b b' ", X.class));
+        assertEquals(X.A, objectToEnum("key", "A", X.class));
+        assertEquals(X.B_B, objectToEnum("key", " 'b b' ", X.class));
     }
 
     @Test
     public void whenRequestingABooleanThenABooleanValueIsConverted() {
-        assertEquals(true, stringToBoolean("key", "true"));
-        assertEquals(false, stringToBoolean("key", "n"));
+        assertEquals(true, objectToBoolean("key", "true"));
+        assertEquals(false, objectToBoolean("key", "n"));
     }
 
     @Test
     public void whenRequestingAStringListThenAStringIsSplitOnCommas() {
-        List<String> list = stringToList("key", "henk, piet, klaas", i -> i);
+        List<String> list = objectToList("key", "henk, piet, klaas", String.class);
 
         assertEquals(3, list.size());
         assertEquals("henk", list.get(0));
@@ -141,21 +141,16 @@ public class TypeConverterTest {
 
     @Test(expected = ParameterSourceException.class)
     public void whenRequestingAnIntegerThenABadValueFails() {
-        stringToInteger("key", "qqqqq");
-    }
-
-    @Test
-    public void whenRequestingAnObjectThenItOnlyReturnsStrings() {
-        assertEquals("qqqqq", stringToObject("key", "qqqqq"));
+        objectToInteger("key", "qqqqq");
     }
 
     @Test
     public void whenRequestingAClassThenItReturnsAClass() {
-        assertEquals(Integer.class, stringToClass("key", "java.lang.Integer"));
+        assertEquals(Integer.class, objectToClass("key", "java.lang.Integer"));
     }
 
     @Test
     public void unobfuscateAString() {
-        assertEquals("some string", stringToUnobfuscatedString("key", "c29tZSBzdHJpbmc="));
+        assertEquals("some string", unobfuscateString("key", "c29tZSBzdHJpbmc="));
     }
 }

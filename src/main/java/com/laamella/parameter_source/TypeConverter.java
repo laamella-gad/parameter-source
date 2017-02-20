@@ -36,7 +36,7 @@ public class TypeConverter {
 
     private static final Pattern SEMICOLONS_DURATION_PATTERN = Pattern.compile("^(?:(?:(\\d*):)?(\\d*):)?(\\d*)\\.?(\\d*)$");
 
-    public static Duration stringToDuration(String key, String s) {
+    public static Duration parseDuration(String key, String s) {
         requireNonNull(key);
         requireNonNull(s);
 
@@ -61,7 +61,7 @@ public class TypeConverter {
                                             add(semiMatcher.group(4), TypeConverter::nanoFraction,
                                                     Duration.ofMillis(0)))));
         }
-        throw new ParameterSourceException("Duration %s for key %s cannot be parsed.", s, key);
+        throw new ParameterSourceException("Duration %s for key %s is not valid.", s, key);
     }
 
     private static Duration nanoFraction(Duration durationIn, long fraction) {
@@ -76,17 +76,7 @@ public class TypeConverter {
         return adder.apply(durationIn, Long.parseLong(stringValue));
     }
 
-    public static int stringToInteger(String key, String str) {
-        requireNonNull(key);
-        requireNonNull(str);
-        try {
-            return Integer.parseInt(str);
-        } catch (NumberFormatException e) {
-            throw new ParameterSourceException("Value %s of %s is not an integer.", str, key);
-        }
-    }
-
-    public static <T> List<T> stringToList(String key, String input, Function<String, T> itemConverter) {
+    public static <T> List<T> parseList(String key, String input, Function<String, T> itemConverter) {
         requireNonNull(key);
         requireNonNull(input);
         requireNonNull(itemConverter);
@@ -95,118 +85,6 @@ public class TypeConverter {
             result.add(itemConverter.apply(itemString.trim()));
         }
         return result;
-    }
-
-    public static long stringToLong(String key, String str) {
-        requireNonNull(key);
-        requireNonNull(str);
-        try {
-            return Long.parseLong(str);
-        } catch (NumberFormatException e) {
-            throw new ParameterSourceException("Value %s of %s is not a long.", str, key);
-        }
-    }
-
-    public static URL stringToUrl(String key, String str) {
-        requireNonNull(key);
-        requireNonNull(str);
-        try {
-            return new URI(str).toURL();
-        } catch (URISyntaxException | MalformedURLException e) {
-            throw new ParameterSourceException("Value %s of %s is not a URL.", str, key);
-        }
-    }
-
-    public static URI stringToUri(String key, String str) {
-        requireNonNull(key);
-        requireNonNull(str);
-        try {
-            return new URI(str);
-        } catch (URISyntaxException e) {
-            throw new ParameterSourceException("Value %s of %s is not a URI.", str, key);
-        }
-    }
-
-    public static Path stringToPath(String key, String str) {
-        requireNonNull(key);
-        requireNonNull(str);
-        try {
-            return Paths.get(str);
-        } catch (InvalidPathException e) {
-            throw new ParameterSourceException("Value %s of %s is not a path.", str, key);
-        }
-    }
-
-    public static float stringToFloat(String key, String str) {
-        requireNonNull(key);
-        requireNonNull(str);
-        try {
-            return Float.parseFloat(str);
-        } catch (NumberFormatException e) {
-            throw new ParameterSourceException("Value %s of %s is not a float.", str, key);
-        }
-    }
-
-    public static double stringToDouble(String key, String str) {
-        requireNonNull(key);
-        requireNonNull(str);
-        try {
-            return Double.parseDouble(str);
-        } catch (NumberFormatException e) {
-            throw new ParameterSourceException("Value %s of %s is not a double.", str, key);
-        }
-    }
-
-    public static boolean stringToBoolean(String key, String str) {
-        requireNonNull(key);
-        requireNonNull(str);
-        switch (str.toLowerCase()) {
-            case "true":
-            case "t":
-            case "y":
-            case "yes":
-            case "1":
-            case "enable":
-            case "enabled":
-                return true;
-            case "false":
-            case "f":
-            case "n":
-            case "no":
-            case "0":
-            case "disable":
-            case "disabled":
-                return false;
-            default:
-                throw new ParameterSourceException("Value %s of %s is not a boolean.", str, key);
-        }
-    }
-
-    public static Object stringToObject(String key, String str) {
-        requireNonNull(key);
-        requireNonNull(str);
-        return str;
-    }
-
-    public static Class<?> stringToClass(String key, String str) {
-        requireNonNull(key);
-        requireNonNull(str);
-        try {
-            return Class.forName(str);
-        } catch (ClassNotFoundException e) {
-            throw new ParameterSourceException("Value %s if %s is not a class.", str, key);
-        }
-    }
-
-    public static <T extends Enum<?>> T stringToEnum(String key, String str, Class<T> enumType) {
-        requireNonNull(key);
-        requireNonNull(str);
-        for (T t : enumType.getEnumConstants()) {
-            if (fuzzy(t.name()).equals(fuzzy(str))) {
-                return t;
-            }
-        }
-        throw new ParameterSourceException("Value %s of %s is not a %s.", str, key, enumType.getSimpleName());
     }
 
     private static String fuzzy(String str) {
@@ -219,7 +97,7 @@ public class TypeConverter {
                 .replace(" ", "");
     }
 
-    public static String stringToUnobfuscatedString(String key, String str) {
+    public static String unobfuscateString(String key, String str) {
         requireNonNull(key);
         requireNonNull(str);
         try {
@@ -242,7 +120,13 @@ public class TypeConverter {
             return (Integer) o;
         }
         if (o instanceof String) {
-            return stringToInteger(key, (String) o);
+            requireNonNull(key);
+            requireNonNull((String) o);
+            try {
+                return Integer.parseInt((String) o);
+            } catch (NumberFormatException e) {
+                // fall through to exception
+            }
         }
         throw new ParameterSourceException("%s does not contain an integer value.", key);
     }
@@ -254,6 +138,9 @@ public class TypeConverter {
             // TODO we could check if there are really objects of type "type" in the list
             return (List<T>) o;
         }
+        if (type == String.class) {
+            return parseList(key, (String) o, i -> (T) i);
+        }
         throw new ParameterSourceException("%s does not contain a list value.", key);
     }
 
@@ -264,9 +151,15 @@ public class TypeConverter {
             return (Long) o;
         }
         if (o instanceof String) {
-            return stringToLong(key, (String) o);
+            requireNonNull(key);
+            requireNonNull((String) o);
+            try {
+                return Long.parseLong((String) o);
+            } catch (NumberFormatException e) {
+                // fall through to exception
+            }
         }
-        throw new ParameterSourceException("%s does not contain an integer value.", key);
+        throw new ParameterSourceException("%s does not contain a long value.", key);
     }
 
     public static Float objectToFloat(String key, Object o) {
@@ -276,7 +169,13 @@ public class TypeConverter {
             return (Float) o;
         }
         if (o instanceof String) {
-            return stringToFloat(key, (String) o);
+            requireNonNull(key);
+            requireNonNull((String) o);
+            try {
+                return Float.parseFloat((String) o);
+            } catch (NumberFormatException e) {
+                // fall through to exception
+            }
         }
         throw new ParameterSourceException("%s does not contain a float value.", key);
     }
@@ -288,7 +187,13 @@ public class TypeConverter {
             return (Double) o;
         }
         if (o instanceof String) {
-            return stringToDouble(key, (String) o);
+            requireNonNull(key);
+            requireNonNull((String) o);
+            try {
+                return Double.parseDouble((String) o);
+            } catch (NumberFormatException e) {
+                // fall through to exception
+            }
         }
         throw new ParameterSourceException("%s does not contain a double value.", key);
     }
@@ -300,7 +205,28 @@ public class TypeConverter {
             return (Boolean) o;
         }
         if (o instanceof String) {
-            return stringToBoolean(key, (String) o);
+            requireNonNull(key);
+            requireNonNull((String) o);
+            switch (((String) o).toLowerCase()) {
+                case "true":
+                case "t":
+                case "y":
+                case "yes":
+                case "1":
+                case "enable":
+                case "enabled":
+                    return true;
+                case "false":
+                case "f":
+                case "n":
+                case "no":
+                case "0":
+                case "disable":
+                case "disabled":
+                    return false;
+                default:
+                    // fall through to exception
+            }
         }
         throw new ParameterSourceException("%s does not contain a boolean value.", key);
     }
@@ -312,7 +238,13 @@ public class TypeConverter {
             return (URI) o;
         }
         if (o instanceof String) {
-            return stringToUri(key, (String) o);
+            requireNonNull(key);
+            requireNonNull((String) o);
+            try {
+                return new URI((String) o);
+            } catch (URISyntaxException e) {
+                // fall through to exception
+            }
         }
         throw new ParameterSourceException("%s does not contain a URI value.", key);
     }
@@ -324,9 +256,15 @@ public class TypeConverter {
             return (URL) o;
         }
         if (o instanceof String) {
-            return stringToUrl(key, (String) o);
+            requireNonNull(key);
+            requireNonNull((String) o);
+            try {
+                return new URI((String) o).toURL();
+            } catch (URISyntaxException | MalformedURLException e) {
+                // fall through to exception
+            }
         }
-        throw new ParameterSourceException("%s does not contain a URL value.", key);
+        throw new ParameterSourceException("Value %s of %s is not a URL.", o, key);
     }
 
     public static Path objectToPath(String key, Object o) {
@@ -336,9 +274,15 @@ public class TypeConverter {
             return (Path) o;
         }
         if (o instanceof String) {
-            return stringToPath(key, (String) o);
+            requireNonNull(key);
+            requireNonNull((String) o);
+            try {
+                return Paths.get((String) o);
+            } catch (InvalidPathException e) {
+                // fall through to exception
+            }
         }
-        throw new ParameterSourceException("%s does not contain a URL value.", key);
+        throw new ParameterSourceException("Value %s of %s is not a path.", o, key);
     }
 
     public static <T extends Enum> T objectToEnum(String key, Object o, Class<T> enumType) {
@@ -348,9 +292,15 @@ public class TypeConverter {
             return enumType.cast(o);
         }
         if (o instanceof String) {
-            return stringToEnum(key, (String) o, enumType);
+            requireNonNull(key);
+            requireNonNull((String) o);
+            for (T t : enumType.getEnumConstants()) {
+                if (fuzzy(t.name()).equals(fuzzy((String) o))) {
+                    return t;
+                }
+            }
         }
-        throw new ParameterSourceException("%s does not contain a %s value.", key, enumType.getSimpleName());
+        throw new ParameterSourceException("Value %s of %s is not a %s.", o, key, enumType.getSimpleName());
     }
 
     public static Class<?> objectToClass(String key, Object o) {
@@ -360,7 +310,13 @@ public class TypeConverter {
             return (Class<?>) o;
         }
         if (o instanceof String) {
-            return stringToClass(key, (String) o);
+            requireNonNull(key);
+            requireNonNull((String) o);
+            try {
+                return Class.forName((String) o);
+            } catch (ClassNotFoundException e) {
+                // fall through to exception
+            }
         }
         throw new ParameterSourceException("%s does not contain a Class value.", key);
     }

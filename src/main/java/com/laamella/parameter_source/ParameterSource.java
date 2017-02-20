@@ -120,7 +120,7 @@ public interface ParameterSource {
      */
     default Optional<String> getOptionalObfuscatedString(String key) {
         requireNonNull(key);
-        return getOptionalString(key).map(s -> stringToUnobfuscatedString(key, s));
+        return getOptionalString(key).map(s -> unobfuscateString(key, s));
     }
 
     /**
@@ -128,7 +128,7 @@ public interface ParameterSource {
      */
     default Optional<Object> getOptionalObject(String key) {
         requireNonNull(key);
-        return getOptionalString(key).map(s -> stringToObject(key, s));
+        return getOptionalString(key).map(s -> (Object) s);
     }
 
 
@@ -137,7 +137,7 @@ public interface ParameterSource {
      */
     default Optional<Duration> getOptionalDuration(String key) {
         requireNonNull(key);
-        return getOptionalString(key).map(s -> stringToDuration(key, s));
+        return getOptionalString(key).map(s -> parseDuration(key, s));
     }
 
     /**
