@@ -2,8 +2,10 @@ package com.laamella.parameter_source;
 
 import org.junit.Test;
 
+import java.io.File;
 import java.net.URI;
 import java.net.URL;
+import java.nio.file.Path;
 import java.util.Arrays;
 import java.util.List;
 
@@ -105,6 +107,12 @@ public class TypeConverterTest {
         assertEquals("localhost", url.getHost());
         assertEquals(8080, url.getPort());
         assertEquals("/abc", url.getPath());
+    }
+
+    @Test
+    public void whenRequestingAPathThenAPathValueIsConverted() {
+        Path path = objectToPath("key", "a/b/c");
+        assertEquals("a" + File.separator + "b" + File.separator + "c", path.toString());
     }
 
     enum X {A, B_B, C}

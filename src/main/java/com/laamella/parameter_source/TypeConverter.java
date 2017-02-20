@@ -5,6 +5,9 @@ import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
+import java.nio.file.InvalidPathException;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.time.Duration;
 import java.util.ArrayList;
 import java.util.Base64;
@@ -121,6 +124,16 @@ public class TypeConverter {
             return new URI(str);
         } catch (URISyntaxException e) {
             throw new ParameterSourceException("Value %s of %s is not a URI.", str, key);
+        }
+    }
+
+    public static Path stringToPath(String key, String str) {
+        requireNonNull(key);
+        requireNonNull(str);
+        try {
+            return Paths.get(str);
+        } catch (InvalidPathException e) {
+            throw new ParameterSourceException("Value %s of %s is not a path.", str, key);
         }
     }
 
@@ -312,6 +325,18 @@ public class TypeConverter {
         }
         if (o instanceof String) {
             return stringToUrl(key, (String) o);
+        }
+        throw new ParameterSourceException("%s does not contain a URL value.", key);
+    }
+
+    public static Path objectToPath(String key, Object o) {
+        requireNonNull(key);
+        requireNonNull(o);
+        if (o instanceof Path) {
+            return (Path) o;
+        }
+        if (o instanceof String) {
+            return stringToPath(key, (String) o);
         }
         throw new ParameterSourceException("%s does not contain a URL value.", key);
     }

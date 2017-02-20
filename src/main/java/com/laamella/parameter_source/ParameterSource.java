@@ -2,6 +2,7 @@ package com.laamella.parameter_source;
 
 import java.net.URI;
 import java.net.URL;
+import java.nio.file.Path;
 import java.time.Duration;
 import java.util.List;
 import java.util.Optional;
@@ -78,6 +79,14 @@ public interface ParameterSource {
     default Optional<URI> getOptionalUri(String key) {
         requireNonNull(key);
         return getOptionalObject(key).map(o -> objectToUri(key, o));
+    }
+
+    /**
+     * Retrieves an optional path from this source by key.
+     */
+    default Optional<Path> getOptionalPath(String key) {
+        requireNonNull(key);
+        return getOptionalObject(key).map(o -> objectToPath(key, o));
     }
 
     /**
@@ -240,6 +249,16 @@ public interface ParameterSource {
     default URL getUrl(String key) {
         requireNonNull(key);
         return getOptionalUrl(key).orElseThrow(missingKeyException(key));
+    }
+
+    /**
+     * Retrieves a required path from this source by key.
+     *
+     * @throws ParameterSourceException when the key is missing.
+     */
+    default Path getPath(String key) {
+        requireNonNull(key);
+        return getOptionalPath(key).orElseThrow(missingKeyException(key));
     }
 
     /**
