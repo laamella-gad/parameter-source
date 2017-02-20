@@ -1,5 +1,8 @@
 package com.laamella.parameter_source;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.sql.*;
 import java.util.Optional;
 import java.util.function.Supplier;
@@ -8,6 +11,8 @@ import java.util.function.Supplier;
  * Queries a database table for values using JDBC.
  */
 public class JdbcDatabaseParameterSource implements ParameterSource {
+    private static final Logger logger = LoggerFactory.getLogger(JdbcDatabaseParameterSource.class);
+
     private final String selectStatement;
     private final Supplier<Connection> connectionSupplier;
 
@@ -30,6 +35,11 @@ public class JdbcDatabaseParameterSource implements ParameterSource {
                 throw new ParameterSourceException(e, "Cannot get a connection to %s.", jdbcUrl);
             }
         }
+
+        @Override
+        public String toString() {
+            return jdbcUrl;
+        }
     }
 
     /**
@@ -40,6 +50,12 @@ public class JdbcDatabaseParameterSource implements ParameterSource {
     public JdbcDatabaseParameterSource(Supplier<Connection> connectionSupplier, String selectStatement) {
         this.connectionSupplier = connectionSupplier;
         this.selectStatement = selectStatement;
+        logger.info("Creating a {}.", toString());
+    }
+
+    @Override
+    public String toString() {
+        return "JDBC database parameter source for " + connectionSupplier.toString();
     }
 
     /**
@@ -72,9 +88,9 @@ public class JdbcDatabaseParameterSource implements ParameterSource {
                 statement.setString(1, key);
                 try (ResultSet resultSet = statement.executeQuery()) {
                     if (resultSet.next()) {
-                        return Optional.of(resultSet.getString(1));
+                        return log(key, Optional.of(resultSet.getString(1)));
                     } else {
-                        return Optional.empty();
+                        return log(key, Optional.empty());
                     }
                 }
             }

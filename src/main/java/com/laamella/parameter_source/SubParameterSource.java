@@ -126,4 +126,9 @@ public class SubParameterSource implements ParameterSource {
         }
         return a + getPathSeparator() + b;
     }
+
+    @Override
+    public String toString() {
+        return String.format("sub parameter source with key part %s for %s", keyPart, delegate);
+    }
 }

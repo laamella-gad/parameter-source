@@ -12,7 +12,7 @@ public class ParameterSourceException extends RuntimeException {
     }
 
     public static Supplier<ParameterSourceException> missingKeyException(String key) {
-        return () -> new ParameterSourceException("Key %s is missing.", key);
+        return () -> new ParameterSourceException("Required key %s is missing.", key);
     }
 
     public static Supplier<ParameterSourceException> badValueException(String key, String value, String description) {

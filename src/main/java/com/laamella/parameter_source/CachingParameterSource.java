@@ -1,5 +1,8 @@
 package com.laamella.parameter_source;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.net.URI;
 import java.net.URL;
 import java.time.Duration;
@@ -10,6 +13,8 @@ import java.util.Optional;
  * Basic caching for any parameter source.
  */
 public class CachingParameterSource implements ParameterSource {
+    private static final Logger logger = LoggerFactory.getLogger(CachingParameterSource.class);
+
     private final Cache cache;
     private final ParameterSource cachedParameterSource;
 
@@ -24,6 +29,7 @@ public class CachingParameterSource implements ParameterSource {
     public CachingParameterSource(ParameterSource cachedParameterSource, Cache cache) {
         this.cachedParameterSource = cachedParameterSource;
         this.cache = cache;
+        logger.info("Creating a {}.", toString());
     }
 
     @Override
@@ -88,5 +94,10 @@ public class CachingParameterSource implements ParameterSource {
 
     public void flush() {
         cache.flush();
+    }
+
+    @Override
+    public String toString() {
+        return String.format("caching parameter source with %s for %s", cache, cachedParameterSource);
     }
 }

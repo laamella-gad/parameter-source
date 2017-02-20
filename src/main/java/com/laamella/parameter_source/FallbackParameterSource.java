@@ -1,5 +1,8 @@
 package com.laamella.parameter_source;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.net.URI;
 import java.net.URL;
 import java.util.List;
@@ -11,6 +14,8 @@ import static java.util.Objects.requireNonNull;
  * Supports the "withFallback" method.
  */
 public class FallbackParameterSource implements ParameterSource {
+    private static final Logger logger = LoggerFactory.getLogger(FallbackParameterSource.class);
+
     private final ParameterSource primarySource;
     private final ParameterSource fallbackSource;
 
@@ -19,6 +24,13 @@ public class FallbackParameterSource implements ParameterSource {
         requireNonNull(fallbackSource);
         this.primarySource = primarySource;
         this.fallbackSource = fallbackSource;
+
+        logger.info("Creating a {}.", toString());
+    }
+
+    @Override
+    public String toString() {
+        return String.format("fallback parameter source for %s with fallback %s.", primarySource, fallbackSource);
     }
 
     @Override

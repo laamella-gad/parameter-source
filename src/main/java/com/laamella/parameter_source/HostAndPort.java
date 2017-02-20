@@ -36,4 +36,9 @@ public class HostAndPort {
         }
         return Optional.empty();
     }
+
+    @Override
+    public String toString() {
+        return port.map(port -> host + ":" + port).orElse(host);
+    }
 }

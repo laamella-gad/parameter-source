@@ -1,5 +1,8 @@
 package com.laamella.parameter_source;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.net.URI;
 import java.net.URL;
 import java.nio.file.Path;
@@ -7,7 +10,7 @@ import java.time.Duration;
 import java.util.List;
 import java.util.Optional;
 
-import static com.laamella.parameter_source.ParameterSourceException.*;
+import static com.laamella.parameter_source.ParameterSourceException.badValueException;
 import static com.laamella.parameter_source.ParameterSourceException.missingKeyException;
 import static com.laamella.parameter_source.TypeConverter.*;
 import static java.util.Objects.requireNonNull;
@@ -17,12 +20,14 @@ import static java.util.Objects.requireNonNull;
  * logging, and easy testing.
  */
 public interface ParameterSource {
+    Logger logger = LoggerFactory.getLogger(ParameterSource.class);
+
     /**
      * Retrieves a string from this source by key.
      */
     default Optional<String> getOptionalString(String key) {
         requireNonNull(key);
-        return getOptionalObject(key).map(o -> objectToString(key, o));
+        return log(key, getOptionalObject(key).map(o -> objectToString(key, o)));
     }
 
     /**
@@ -30,7 +35,7 @@ public interface ParameterSource {
      */
     default Optional<Integer> getOptionalInteger(String key) {
         requireNonNull(key);
-        return getOptionalObject(key).map(o -> objectToInteger(key, o));
+        return log(key, getOptionalObject(key).map(o -> objectToInteger(key, o)));
     }
 
     /**
@@ -38,7 +43,7 @@ public interface ParameterSource {
      */
     default Optional<List<String>> getOptionalStringList(String key) {
         requireNonNull(key);
-        return getOptionalObject(key).map(o -> objectToList(key, o, String.class));
+        return log(key, getOptionalObject(key).map(o -> objectToList(key, o, String.class)));
     }
 
     /**
@@ -46,16 +51,15 @@ public interface ParameterSource {
      */
     default Optional<Long> getOptionalLong(String key) {
         requireNonNull(key);
-        return getOptionalObject(key).map(o -> objectToLong(key, o));
+        return log(key, getOptionalObject(key).map(o -> objectToLong(key, o)));
     }
-
 
     /**
      * Retrieves an optional URL from this source by key.
      */
     default Optional<URL> getOptionalUrl(String key) {
         requireNonNull(key);
-        return getOptionalObject(key).map(o -> objectToUrl(key, o));
+        return log(key, getOptionalObject(key).map(o -> objectToUrl(key, o)));
     }
 
     /**
@@ -63,7 +67,7 @@ public interface ParameterSource {
      */
     default Optional<Class<?>> getOptionalClass(String key) {
         requireNonNull(key);
-        return getOptionalObject(key).map(o -> objectToClass(key, o));
+        return log(key, getOptionalObject(key).map(o -> objectToClass(key, o)));
     }
 
     /**
@@ -71,7 +75,7 @@ public interface ParameterSource {
      */
     default <T extends Enum<?>> Optional<T> getOptionalEnum(String key, Class<T> enumType) {
         requireNonNull(key);
-        return getOptionalObject(key).map(o -> objectToEnum(key, o, enumType));
+        return log(key, getOptionalObject(key).map(o -> objectToEnum(key, o, enumType)));
     }
 
     /**
@@ -79,7 +83,7 @@ public interface ParameterSource {
      */
     default Optional<URI> getOptionalUri(String key) {
         requireNonNull(key);
-        return getOptionalObject(key).map(o -> objectToUri(key, o));
+        return log(key, getOptionalObject(key).map(o -> objectToUri(key, o)));
     }
 
     /**
@@ -87,7 +91,7 @@ public interface ParameterSource {
      */
     default Optional<Path> getOptionalPath(String key) {
         requireNonNull(key);
-        return getOptionalObject(key).map(o -> objectToPath(key, o));
+        return log(key, getOptionalObject(key).map(o -> objectToPath(key, o)));
     }
 
     /**
@@ -95,25 +99,23 @@ public interface ParameterSource {
      */
     default Optional<Float> getOptionalFloat(String key) {
         requireNonNull(key);
-        return getOptionalObject(key).map(o -> objectToFloat(key, o));
+        return log(key, getOptionalObject(key).map(o -> objectToFloat(key, o)));
     }
-
 
     /**
      * Retrieves an optional Double from this source by key.
      */
     default Optional<Double> getOptionalDouble(String key) {
         requireNonNull(key);
-        return getOptionalObject(key).map(o -> objectToDouble(key, o));
+        return log(key, getOptionalObject(key).map(o -> objectToDouble(key, o)));
     }
-
 
     /**
      * Retrieves an optional boolean from this source by key.
      */
     default Optional<Boolean> getOptionalBoolean(String key) {
         requireNonNull(key);
-        return getOptionalObject(key).map(o -> objectToBoolean(key, o));
+        return log(key, getOptionalObject(key).map(o -> objectToBoolean(key, o)));
     }
 
     /**
@@ -121,7 +123,19 @@ public interface ParameterSource {
      */
     default Optional<String> getOptionalObfuscatedString(String key) {
         requireNonNull(key);
-        return getOptionalString(key).map(s -> unobfuscateString(key, s));
+        return log(key, getOptionalString(key).map(s -> unobfuscateString(key, s)));
+    }
+
+    /**
+     * Do not use. Internal method that was forced public.
+     */
+    default <T extends Optional<?>> T log(String key, T value) {
+        if (value.isPresent()) {
+            logger.debug("Value for key '{}': '{}'", key, value.get().toString());
+        } else {
+            logger.debug("Value for key '{}' was not found.", key);
+        }
+        return value;
     }
 
     /**
@@ -129,7 +143,7 @@ public interface ParameterSource {
      */
     default Optional<Object> getOptionalObject(String key) {
         requireNonNull(key);
-        return getOptionalString(key).map(s -> (Object) s);
+        return log(key, getOptionalString(key).map(s -> (Object) s));
     }
 
     /**
@@ -137,7 +151,7 @@ public interface ParameterSource {
      */
     default Optional<ByteSize> getOptionalByteSize(String key) {
         requireNonNull(key);
-        return getOptionalString(key).map(s -> ByteSize.parse(s).orElseThrow(badValueException(key, s, "a byte size")));
+        return log(key, getOptionalString(key).map(s -> ByteSize.parse(s).orElseThrow(badValueException(key, s, "a byte size"))));
     }
 
     /**
@@ -145,7 +159,7 @@ public interface ParameterSource {
      */
     default Optional<HostAndPort> getOptionalHostAndPort(String key) {
         requireNonNull(key);
-        return getOptionalString(key).map(s -> HostAndPort.parse(s).orElseThrow(badValueException(key, s, "a host:port")));
+        return log(key, getOptionalString(key).map(s -> HostAndPort.parse(s).orElseThrow(badValueException(key, s, "a host:port"))));
     }
 
     /**
@@ -153,7 +167,7 @@ public interface ParameterSource {
      */
     default Optional<Duration> getOptionalDuration(String key) {
         requireNonNull(key);
-        return getOptionalString(key).map(s -> parseDuration(key, s));
+        return log(key, getOptionalString(key).map(s -> parseDuration(key, s)));
     }
 
     /**
