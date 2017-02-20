@@ -143,6 +143,16 @@ kb kilobyte(s)
 b byte(s)
 ```
 
+### The host and port format
+
+```
+192.168.1.1:8080
+192.168.1.1
+bla.com:1234
+bla.com
+```
+The only check is that the value following `:` is a number.
+
 ### The enum format
 
 Enums values are case insensitive,
