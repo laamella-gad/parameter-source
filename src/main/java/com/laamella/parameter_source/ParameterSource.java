@@ -1,5 +1,7 @@
 package com.laamella.parameter_source;
 
+import com.laamella.parameter_source.unit.ByteSize;
+
 import java.net.URI;
 import java.net.URL;
 import java.nio.file.Path;
@@ -131,6 +133,13 @@ public interface ParameterSource {
         return getOptionalString(key).map(s -> (Object) s);
     }
 
+    /**
+     * Retrieves an optional byte size from this source by key.
+     */
+    default Optional<ByteSize> getOptionalByteSize(String key) {
+        requireNonNull(key);
+        return getOptionalString(key).map(s -> ByteSize.parse(key, s));
+    }
 
     /**
      * Retrieves an optional duration from this source by key.
@@ -239,6 +248,16 @@ public interface ParameterSource {
     default Duration getDuration(String key) {
         requireNonNull(key);
         return getOptionalDuration(key).orElseThrow(missingKeyException(key));
+    }
+
+    /**
+     * Retrieves a required byte size from this source by key.
+     *
+     * @throws ParameterSourceException when the key is missing.
+     */
+    default ByteSize getByteSize(String key) {
+        requireNonNull(key);
+        return getOptionalByteSize(key).orElseThrow(missingKeyException(key));
     }
 
     /**

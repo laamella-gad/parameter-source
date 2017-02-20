@@ -3,7 +3,7 @@ package com.laamella.parameter_source;
 import java.util.function.Supplier;
 
 public class ParameterSourceException extends RuntimeException {
-    ParameterSourceException(String message, Object... args) {
+    public ParameterSourceException(String message, Object... args) {
         super(String.format(message, args));
     }
 
