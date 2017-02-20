@@ -161,6 +161,7 @@ and underscores, whitespace, and quotations marks are ignored.
 ## Type conversions in general
 
 The general pattern is:
+
 1. get the value of the key
 1. is the type of the value of the type that was requested? Return it.
 1. is the type of the value related to the type that was requested? Convert it and return it.
