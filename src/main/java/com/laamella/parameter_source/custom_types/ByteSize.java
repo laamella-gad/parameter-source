@@ -1,7 +1,6 @@
-package com.laamella.parameter_source.unit;
+package com.laamella.parameter_source.custom_types;
 
-import com.laamella.parameter_source.ParameterSourceException;
-
+import java.util.Optional;
 import java.util.function.BiFunction;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -91,13 +90,13 @@ public class ByteSize {
         return plusBytes(bytes << EB_SHIFT);
     }
 
-    public static ByteSize parse(String key, String str) {
+    public static Optional<ByteSize> parse(String str) {
         Matcher matcher = PATTERN.matcher(str.toLowerCase());
         if (!matcher.matches()) {
-            throw new ParameterSourceException("Value %s of %sis not a valid size", str, key);
+            return Optional.empty();
         }
 
-        return
+        return Optional.of(
                 add(matcher.group(1), ByteSize::plusExabytes,
                         add(matcher.group(2), ByteSize::plusPetabytes,
                                 add(matcher.group(3), ByteSize::plusTerabytes,
@@ -105,7 +104,7 @@ public class ByteSize {
                                                 add(matcher.group(5), ByteSize::plusMegabytes,
                                                         add(matcher.group(6), ByteSize::plusKilobytes,
                                                                 add(matcher.group(7), ByteSize::plusBytes,
-                                                                        ByteSize.ofBytes(0))))))));
+                                                                        ByteSize.ofBytes(0)))))))));
     }
 
     private static ByteSize add(String stringValue, BiFunction<ByteSize, Long, ByteSize> adder, ByteSize in) {

@@ -1,4 +1,4 @@
-package com.laamella.parameter_source.unit;
+package com.laamella.parameter_source.custom_types;
 
 import org.junit.Test;
 

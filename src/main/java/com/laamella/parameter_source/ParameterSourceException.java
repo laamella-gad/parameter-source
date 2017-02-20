@@ -15,4 +15,7 @@ public class ParameterSourceException extends RuntimeException {
         return () -> new ParameterSourceException("Key %s is missing.", key);
     }
 
+    public static Supplier<ParameterSourceException> badValueException(String key, String value, String description) {
+        return () -> new ParameterSourceException("Value %s for %s is not a %s", value, key, description);
+    }
 }

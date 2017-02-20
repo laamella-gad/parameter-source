@@ -1,6 +1,7 @@
 package com.laamella.parameter_source;
 
-import com.laamella.parameter_source.unit.ByteSize;
+import com.laamella.parameter_source.custom_types.ByteSize;
+import com.laamella.parameter_source.custom_types.HostAndPort;
 
 import java.net.URI;
 import java.net.URL;
@@ -9,6 +10,7 @@ import java.time.Duration;
 import java.util.List;
 import java.util.Optional;
 
+import static com.laamella.parameter_source.ParameterSourceException.*;
 import static com.laamella.parameter_source.ParameterSourceException.missingKeyException;
 import static com.laamella.parameter_source.TypeConverter.*;
 import static java.util.Objects.requireNonNull;
@@ -138,7 +140,15 @@ public interface ParameterSource {
      */
     default Optional<ByteSize> getOptionalByteSize(String key) {
         requireNonNull(key);
-        return getOptionalString(key).map(s -> ByteSize.parse(key, s));
+        return getOptionalString(key).map(s -> ByteSize.parse(s).orElseThrow(badValueException(key, s, "byte size")));
+    }
+
+    /**
+     * Retrieves an optional host:port from this source by key.
+     */
+    default Optional<HostAndPort> getOptionalHostAndPort(String key) {
+        requireNonNull(key);
+        return getOptionalString(key).map(s -> HostAndPort.parse(s).orElseThrow(badValueException(key, s, "host:port")));
     }
 
     /**
@@ -258,6 +268,16 @@ public interface ParameterSource {
     default ByteSize getByteSize(String key) {
         requireNonNull(key);
         return getOptionalByteSize(key).orElseThrow(missingKeyException(key));
+    }
+
+    /**
+     * Retrieves a required host and port from this source by key.
+     *
+     * @throws ParameterSourceException when the key is missing.
+     */
+    default HostAndPort getHostAndPort(String key) {
+        requireNonNull(key);
+        return getOptionalHostAndPort(key).orElseThrow(missingKeyException(key));
     }
 
     /**
