@@ -1,8 +1,5 @@
 package com.laamella.parameter_source;
 
-import com.laamella.parameter_source.custom_types.ByteSize;
-import com.laamella.parameter_source.custom_types.HostAndPort;
-
 import java.net.URI;
 import java.net.URL;
 import java.nio.file.Path;

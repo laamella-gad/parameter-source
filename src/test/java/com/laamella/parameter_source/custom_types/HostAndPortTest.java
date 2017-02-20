@@ -1,5 +1,6 @@
 package com.laamella.parameter_source.custom_types;
 
+import com.laamella.parameter_source.HostAndPort;
 import org.junit.Test;
 
 import static org.junit.Assert.assertEquals;

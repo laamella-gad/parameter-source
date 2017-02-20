@@ -1,4 +1,4 @@
-package com.laamella.parameter_source.custom_types;
+package com.laamella.parameter_source;
 
 import java.util.Optional;
 import java.util.regex.Matcher;
