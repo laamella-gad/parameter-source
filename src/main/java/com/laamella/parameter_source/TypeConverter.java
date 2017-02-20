@@ -17,6 +17,7 @@ import java.util.function.Function;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import static com.laamella.parameter_source.ParameterSourceException.*;
 import static java.util.Objects.requireNonNull;
 
 /**
@@ -61,7 +62,7 @@ public class TypeConverter {
                                             add(semiMatcher.group(4), TypeConverter::nanoFraction,
                                                     Duration.ofMillis(0)))));
         }
-        throw new ParameterSourceException("Duration %s for key %s is not valid.", s, key);
+        throw badValueException(key, s, "a duration").get();
     }
 
     private static Duration nanoFraction(Duration durationIn, long fraction) {
@@ -103,7 +104,7 @@ public class TypeConverter {
         try {
             return new String(Base64.getDecoder().decode(str), "ASCII");
         } catch (UnsupportedEncodingException | IllegalArgumentException e) {
-            throw new ParameterSourceException(e, "Value %s of %s cannot be base64 decoded.", str, key);
+            throw badValueException(key, str, "base 64 encoded").get();
         }
     }
 
@@ -128,7 +129,7 @@ public class TypeConverter {
                 // fall through to exception
             }
         }
-        throw new ParameterSourceException("%s does not contain an integer value.", key);
+        throw badValueException(key, "an integer").get();
     }
 
     public static <T> List<T> objectToList(String key, Object o, Class<T> type) {
@@ -141,7 +142,7 @@ public class TypeConverter {
         if (type == String.class) {
             return parseList(key, (String) o, i -> (T) i);
         }
-        throw new ParameterSourceException("%s does not contain a list value.", key);
+        throw badValueException(key, "a list").get();
     }
 
     public static Long objectToLong(String key, Object o) {
@@ -159,7 +160,7 @@ public class TypeConverter {
                 // fall through to exception
             }
         }
-        throw new ParameterSourceException("%s does not contain a long value.", key);
+        throw badValueException(key, "a long").get();
     }
 
     public static Float objectToFloat(String key, Object o) {
@@ -177,7 +178,7 @@ public class TypeConverter {
                 // fall through to exception
             }
         }
-        throw new ParameterSourceException("%s does not contain a float value.", key);
+        throw badValueException(key, "a float").get();
     }
 
     public static Double objectToDouble(String key, Object o) {
@@ -195,7 +196,7 @@ public class TypeConverter {
                 // fall through to exception
             }
         }
-        throw new ParameterSourceException("%s does not contain a double value.", key);
+        throw badValueException(key, "a double").get();
     }
 
     public static Boolean objectToBoolean(String key, Object o) {
@@ -228,7 +229,7 @@ public class TypeConverter {
                     // fall through to exception
             }
         }
-        throw new ParameterSourceException("%s does not contain a boolean value.", key);
+        throw badValueException(key, "a boolean").get();
     }
 
     public static URI objectToUri(String key, Object o) {
@@ -246,7 +247,7 @@ public class TypeConverter {
                 // fall through to exception
             }
         }
-        throw new ParameterSourceException("%s does not contain a URI value.", key);
+        throw badValueException(key, "a URI").get();
     }
 
     public static URL objectToUrl(String key, Object o) {
@@ -264,7 +265,7 @@ public class TypeConverter {
                 // fall through to exception
             }
         }
-        throw new ParameterSourceException("Value %s of %s is not a URL.", o, key);
+        throw badValueException(key, "a URL").get();
     }
 
     public static Path objectToPath(String key, Object o) {
@@ -282,7 +283,7 @@ public class TypeConverter {
                 // fall through to exception
             }
         }
-        throw new ParameterSourceException("Value %s of %s is not a path.", o, key);
+        throw badValueException(key, "a path").get();
     }
 
     public static <T extends Enum> T objectToEnum(String key, Object o, Class<T> enumType) {
@@ -300,7 +301,7 @@ public class TypeConverter {
                 }
             }
         }
-        throw new ParameterSourceException("Value %s of %s is not a %s.", o, key, enumType.getSimpleName());
+        throw badValueException(key, "a "+enumType.getSimpleName()).get();
     }
 
     public static Class<?> objectToClass(String key, Object o) {
@@ -318,6 +319,6 @@ public class TypeConverter {
                 // fall through to exception
             }
         }
-        throw new ParameterSourceException("%s does not contain a Class value.", key);
+        throw badValueException(key, "a Class").get();
     }
 }

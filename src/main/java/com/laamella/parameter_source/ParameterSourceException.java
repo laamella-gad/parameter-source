@@ -16,6 +16,10 @@ public class ParameterSourceException extends RuntimeException {
     }
 
     public static Supplier<ParameterSourceException> badValueException(String key, String value, String description) {
-        return () -> new ParameterSourceException("Value %s for %s is not a %s", value, key, description);
+        return () -> new ParameterSourceException("Value %s for %s is not %s", value, key, description);
+    }
+
+    public static Supplier<ParameterSourceException> badValueException(String key, String description) {
+        return () -> new ParameterSourceException("%s does not contain %s", key, description);
     }
 }

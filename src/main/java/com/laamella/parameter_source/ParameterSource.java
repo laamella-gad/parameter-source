@@ -140,7 +140,7 @@ public interface ParameterSource {
      */
     default Optional<ByteSize> getOptionalByteSize(String key) {
         requireNonNull(key);
-        return getOptionalString(key).map(s -> ByteSize.parse(s).orElseThrow(badValueException(key, s, "byte size")));
+        return getOptionalString(key).map(s -> ByteSize.parse(s).orElseThrow(badValueException(key, s, "a byte size")));
     }
 
     /**
@@ -148,7 +148,7 @@ public interface ParameterSource {
      */
     default Optional<HostAndPort> getOptionalHostAndPort(String key) {
         requireNonNull(key);
-        return getOptionalString(key).map(s -> HostAndPort.parse(s).orElseThrow(badValueException(key, s, "host:port")));
+        return getOptionalString(key).map(s -> HostAndPort.parse(s).orElseThrow(badValueException(key, s, "a host:port")));
     }
 
     /**
