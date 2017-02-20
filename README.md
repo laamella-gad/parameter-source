@@ -21,6 +21,7 @@ If a parameter is correct, it will be delivered, otherwise it will throw an exce
 - tight support for the kind of values that are often seen as application parameters: strings, durations, urls...
 - one approach to API naming and much reuse, so that parameter sources will look alike as much as possible.
 Extending a class to define your own source is easy.
+- extensive logging that will show every action. 
 
 ## Adding the dependency
 
@@ -29,7 +30,7 @@ Put this in your pom.xml:
 <dependency>
 	<groupId>com.laamella</groupId>
 	<artifactId>parameter-source</artifactId>
-	<version>0.4</version>
+	<version>1.0</version>
 </dependency>
 ```
 
