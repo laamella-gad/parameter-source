@@ -9,16 +9,16 @@ import java.util.regex.Pattern;
  */
 public class HostAndPort {
     private final String host;
-    private final Optional<Integer> port;
+    private final Integer port;
 
     private static final Pattern PATTERN = Pattern.compile("^([^:]*)(?::(\\d+))?$");
 
-    public HostAndPort(String host, Optional<Integer> port) {
+    public HostAndPort(String host, Integer port) {
         this.host = host;
         this.port = port;
     }
 
-    public Optional<Integer> getPort() {
+    public Integer getPort() {
         return port;
     }
 
@@ -30,15 +30,18 @@ public class HostAndPort {
         Matcher matcher = PATTERN.matcher(str);
         if (matcher.matches()) {
             if (matcher.group(2) == null) {
-                return Optional.of(new HostAndPort(matcher.group(1), Optional.empty()));
+                return Optional.of(new HostAndPort(matcher.group(1), null));
             }
-            return Optional.of(new HostAndPort(matcher.group(1), Optional.of(Integer.parseInt(matcher.group(2)))));
+            return Optional.of(new HostAndPort(matcher.group(1), Integer.parseInt(matcher.group(2))));
         }
         return Optional.empty();
     }
 
     @Override
     public String toString() {
-        return port.map(port -> host + ":" + port).orElse(host);
+        if (port == null) {
+            return host + ":" + port;
+        }
+        return host;
     }
 }

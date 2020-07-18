@@ -1,6 +1,5 @@
 package com.laamella.parameter_source;
 
-import java.io.UnsupportedEncodingException;
 import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -17,7 +16,8 @@ import java.util.function.Function;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import static com.laamella.parameter_source.ParameterSourceException.*;
+import static com.laamella.parameter_source.ParameterSourceException.badValueException;
+import static java.nio.charset.StandardCharsets.US_ASCII;
 import static java.util.Objects.requireNonNull;
 
 /**
@@ -102,8 +102,8 @@ public class TypeConverter {
         requireNonNull(key);
         requireNonNull(str);
         try {
-            return new String(Base64.getDecoder().decode(str), "ASCII");
-        } catch (UnsupportedEncodingException | IllegalArgumentException e) {
+            return new String(Base64.getDecoder().decode(str), US_ASCII);
+        } catch (IllegalArgumentException e) {
             throw badValueException(key, str, "base 64 encoded").get();
         }
     }
@@ -286,7 +286,7 @@ public class TypeConverter {
         throw badValueException(key, "a path").get();
     }
 
-    public static <T extends Enum> T objectToEnum(String key, Object o, Class<T> enumType) {
+    public static <T extends Enum<?>> T objectToEnum(String key, Object o, Class<T> enumType) {
         requireNonNull(key);
         requireNonNull(o);
         if (enumType.isInstance(o)) {
